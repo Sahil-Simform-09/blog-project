@@ -1,0 +1,36 @@
+{
+    "blogs": [
+        {
+            "id": 12345,   
+            "title": "Getting Started with Express.js",
+            "author": "John Doe",
+            "date": "2022-01-15",
+            "content": "Express.js is a popular web application framework for Node.js...",
+            "tags": ["Node.js", "Express.js", "Web Development"]
+        },
+        {
+            "id": 12395,
+            "title": "10 Tips for Effective Time Management",
+            "author": "Jane Smith",
+            "date": "2022-03-28",
+            "content": "Time management is crucial for productivity and success...",
+            "tags": ["Productivity", "Time Management"]
+        },
+        {
+            "id": 17345,
+            "title": "Introduction to React Hooks",
+            "author": "Samuel Johnson",
+            "date": "2022-05-10",
+            "content": "React Hooks revolutionized the way we write components...",
+            "tags": ["React", "JavaScript", "Front-end Development"]
+        },
+        {
+            "id": 10345,
+            "title": "The Benefits of Regular Exercise",
+            "author": "Emily Brown",
+            "date": "2022-06-15",
+            "content": "Regular exercise has numerous benefits for physical and mental health...",
+            "tags": ["Health", "Fitness", "Wellness"]
+        }       
+    ]
+}  
