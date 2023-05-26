@@ -1,4 +1,5 @@
 const express  = require('express');
+const ejs = require('ejs');
 const app = express();
 
 // rquire all routes
@@ -7,6 +8,8 @@ const userRouter = require('./routes/user');
 const adminRouter = require('./routes/admin');
 const blogRouter = require('./routes/blog');
 
+// Set EJS as the view engine
+app.set('view engine', 'ejs');
 
 // ------------------------------ middlewares ------------------------------ //
 // ------ static files //
