@@ -29,15 +29,15 @@ router.post('/create', (req, res) => {
     }
 
     try {
-        // Parse the JSON string into a JavaScript object
-        const jsonObject = JSON.parse(data);
+        // Parse the JSON string into a JavaScript objectE
+        const blogsArray = JSON.parse(data).blogs;
         
         blog.id = generateId();
         // Modify the specific property
-        jsonObject.blogs.push(blog);
+        blogsArray.push(blog);
 
         // Convert the JavaScript object back to a JSON string
-        const jsonString = JSON.stringify(jsonObject); // The last argument (2) adds indentation for readability
+        const jsonString = '{"blogs":' + JSON.stringify(blogsArray) +'}';
 
         // Write the JSON string back to the file
         fs.writeFile('blog.json', jsonString, 'utf8', (err) => {
@@ -48,13 +48,48 @@ router.post('/create', (req, res) => {
 
         console.log('Data written successfully.');
         res.status(201);
-        return res.redirect('/blog/create');
+        return res.redirect('/blog');
         });
     } catch (err) {
         console.error('Error parsing JSON:', err);
     }
     });
 });
+
+// delete a new blog
+router.delete('/:blogId/delete', (req, res) => {
+    const {blogId} = req.params;
+    fs.readFile('blog.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading JSON file:', err);
+            return res.end();
+        }
+    
+        try {
+            // Parse the JSON string into a JavaScript object
+            const blogsArray = JSON.parse(data).blogs;
+            const index = blogsArray.findIndex( blog => blog.id === Number(blogId));
+
+            blogsArray.splice(index, 1);
+            // Convert the JavaScript object back to a JSON string
+            const jsonString = '{"blogs":' + JSON.stringify(blogsArray) + '}'; 
+            
+            // Write the JSON string back to the file
+            fs.writeFile('blog.json', jsonString, 'utf8', (err) => {
+                if (err) {
+                    console.error('Error writing to JSON file:', err);
+                    return res.end();
+                }
+                
+                console.log('Data Deleted successfully.');
+                return res.redirect('http://localhost:3000/blog');
+            });
+        } catch (err) {
+            console.error('Error parsing JSON:', err);
+        }
+        });
+});
+
 
 // get particular blogs by id
 router.get('/:blogId', (req, res) => {

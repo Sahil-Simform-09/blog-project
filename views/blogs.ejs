@@ -16,17 +16,19 @@
         <div id="blog-container">
             <% blogs.forEach( blog => { %>
                 <div class="blog">
-                    <h2><%= blog.title %></h2>
-                    <h4><%= blog.author %></h4>
-                    <% if(blog.content.length > 100) { %>
-                        <p><%= blog.content.substring(0, 100) %></p>
+                    <div class="blog-text">
+                        <h2><%= blog.title %></h2>
+                        <h4><%= blog.author %></h4>
+                        <% if(blog.content.length > 100) { %>
+                            <p><%= blog.content.substring(0, 100) %></p>
+                        <% } else { %>
+                            <p><%= blog.content %></p>
+                        <% } %>
                         <a href="/blog/<%= blog.id %>">Read more...</a>
-                    <% } else { %>
-                        <p><%= blog.content %></p>
-                    <% } %>
+                    </div>
                 </div>
             <% }); %>
-        </div>
+        </div> 
     </body>
 </html>
 
