@@ -58,7 +58,25 @@ router.post('/create', (req, res) => {
 
 // update a particular blog
 router.get('/:id/edit', (req, res) => {
-    res.render('create', {whichWork: 'edit'});
+    const {id} = req.params;
+    fs.readFile('blog.json', 'utf8', (err, data) => {
+    if (err) {
+        console.error('Error reading JSON file:', err);
+        return res.end();
+    }
+
+    try {
+        // Parse the JSON string into a JavaScript objectE
+        const blogsArray = JSON.parse(data).blogs;
+        
+        const index = blogsArray.findIndex( oneBlog => oneBlog.id === Number(id));
+        const blogToUpdate = blogsArray[index];
+        res.render('create', {whichWork: 'edit', blog: blogToUpdate});
+    } catch (err) {
+        console.error('Error parsing JSON:', err);
+        res.end();
+    }
+    });
 });
 router.put('/:id/edit', (req, res) => {
 
