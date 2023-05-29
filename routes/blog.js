@@ -69,7 +69,7 @@ router.delete('/:blogId/delete', (req, res) => {
             // Parse the JSON string into a JavaScript object
             const blogsArray = JSON.parse(data).blogs;
             const index = blogsArray.findIndex( blog => blog.id === Number(blogId));
-
+            
             blogsArray.splice(index, 1);
             // Convert the JavaScript object back to a JSON string
             const jsonString = '{"blogs":' + JSON.stringify(blogsArray) + '}'; 
@@ -78,11 +78,11 @@ router.delete('/:blogId/delete', (req, res) => {
             fs.writeFile('blog.json', jsonString, 'utf8', (err) => {
                 if (err) {
                     console.error('Error writing to JSON file:', err);
-                    return res.end();
+                    return res.json({"message": "Error writing to JSON file:", "status": "Error"});
                 }
                 
                 console.log('Data Deleted successfully.');
-                return res.redirect('http://localhost:3000/blog');
+                return res.json({"message": "Data Deleted successfully.", "status": "ok"});
             });
         } catch (err) {
             console.error('Error parsing JSON:', err);
