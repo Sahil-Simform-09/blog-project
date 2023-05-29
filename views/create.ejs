@@ -1,30 +1,53 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Create Blog Post</title>
-        <link rel="stylesheet" href="/css/style.css">
-    </head>
-    <body>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/blog">read blogs</a></li>
-                <li><a href="/blog/create">create blog</a></li>
-            </ul>
-        </nav>
-        <h1>Create Blog Post</h1>
-        
+<%- include('layouts/layout') %>
+        <h1><%= whichWork %> Blog Post</h1>
+                
         <form action="/blog/create" method="POST">
             <label for="title">Title:</label>
             <input type="text" id="title" name="title" required>
-            
+                    
             <label for="author">Author:</label>
             <input type="text" id="author" name="author" required>
-            
+                    
             <label for="content">Content:</label>
             <textarea id="content" name="content" required rows="20" cols="500"></textarea>
-            
+                    
             <input type="submit" value="Submit">
         </form>
+        <script>
+            const form = document.querySelector('form');
+            
+            const path = location.pathname;
+            if(path.includes('edit')) {
+                form.removeAttribute('method');
+
+                document.querySelector('form').addEventListener('submit', event => {
+                    event.preventDefault();
+
+                    const formData = {
+                        title: document.querySelector('#title').value,
+                        author: document.querySelector('#author').value,
+                        content: document.querySelector('#content').value,
+                        id: Number(location.pathname.substring(6, location.pathname.length - 5))
+                    }
+                    
+                    console.log();
+                    fetch(location.pathname, {
+                        method: 'PUT',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(response =>  response.json())
+                    .then(data => {
+                        console.log(data);
+                        location = '/blog';
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+                });
+            }
+        </script>
     </body>
 </html>
