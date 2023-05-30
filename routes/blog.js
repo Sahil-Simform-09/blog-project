@@ -1,23 +1,23 @@
 const express  = require('express');
 const router = express.Router();
 
-const {handleDeleteBlogById, handleGetAllBlog, handleGetBlogById, handleNewBlog, handleUpdateBlogById} = require('../controlllers/blog-controller');
+const {deleteBlogById, getAllBlog, getBlogById, createNewBlog,updateBlogById} = require('../controlllers/blog-controller');
 // get all blogs
-router.get('/', handleGetAllBlog);
+router.get('/', getAllBlog);
 
 // create a new blog
-router.get('/create', handleNewBlog().index);
-router.post('/create', handleNewBlog().create);
+router.get('/create', createNewBlog().index);
+router.post('/create', createNewBlog().create);
 
 // update a particular blog
-router.get('/:id/edit',handleUpdateBlogById().index);
-router.put('/:id/edit', handleUpdateBlogById().update);
+router.get('/:id/edit',updateBlogById().index);
+router.put('/:id/edit', updateBlogById().update);
 
 // delete a new blog
-router.delete('/:blogId/delete', handleDeleteBlogById);
+router.delete('/:blogId/delete', deleteBlogById);
 
 
 // get particular blogs by id
-router.get('/:blogId', handleGetBlogById);
+router.get('/:blogId', getBlogById);
 
 module.exports = router;

@@ -4,7 +4,7 @@ const path = require('path');
 const generateId = () => {
     return Date.now();
 }
-const handleNewBlog = () => {
+const createNewBlog = () => {
     return {
         index(req, res) {
             res.render('create', {whichWork: 'create'});
@@ -48,7 +48,7 @@ const handleNewBlog = () => {
         }
     }
 }
-const handleUpdateBlogById = () => {
+const updateBlogById = () => {
     return {
         index (req, res) {
             const {id} = req.params;
@@ -113,7 +113,7 @@ const handleUpdateBlogById = () => {
         }
     }
 }
-const handleDeleteBlogById = (req, res) => {
+const deleteBlogById = (req, res) => {
     const {blogId} = req.params;
     fs.readFile('blog.json', 'utf8', (err, data) => {
         if (err) {
@@ -145,7 +145,7 @@ const handleDeleteBlogById = (req, res) => {
         }
         });
 }
-const handleGetBlogById = (req, res) => {
+const getBlogById = (req, res) => {
     const {blogId} = req.params;
     fs.readFile('blog.json', (err, blogs) => {
         if(!err) {
@@ -163,7 +163,7 @@ const handleGetBlogById = (req, res) => {
         }
     });
 }
-const handleGetAllBlog = (req, res) => {
+const getAllBlog = (req, res) => {
     fs.readFile('blog.json', (err, blogs) => {
         if(!err) {
             res.render('blogs', {blogs: JSON.parse(blogs.toString()).blogs});
@@ -173,4 +173,4 @@ const handleGetAllBlog = (req, res) => {
     });
 }
 
-module.exports = {handleDeleteBlogById, handleGetAllBlog, handleGetBlogById, handleNewBlog, handleUpdateBlogById};
+module.exports = {deleteBlogById, getAllBlog, getBlogById, createNewBlog,updateBlogById};
