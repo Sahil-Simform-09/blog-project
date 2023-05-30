@@ -12,7 +12,7 @@ const createNewBlog = () => {
         create (req, res) {
 
             const blog = req.body;
-        
+
             fs.readFile('blog.json', 'utf8', (err, data) => {
             if (err) {
                 console.error('Error reading JSON file:', err);
