@@ -29,7 +29,7 @@
                     location = '/blog/<%= blog.id %>/' + whichWork;
                 }
 
-                if(whichWork !== undefined) {
+                if(whichWork === 'delete') {
                     let url =  '/blog/<%= blog.id %>/' + whichWork;
                     fetch(url, {
                         method: whichWork.toUpperCase()
