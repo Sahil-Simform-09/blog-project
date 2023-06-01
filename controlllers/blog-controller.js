@@ -109,7 +109,7 @@ const updateBlogById = () => {
             } catch (err) {
                 console.error('Error parsing JSON:', err);
             }
-            });
+            }); 
         }
     }
 }
