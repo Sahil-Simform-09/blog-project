@@ -1,8 +1,6 @@
 const express  = require('express');
 const ejs = require('ejs');
 const app = express();
-const session = require('express-session');
-const FileStore = require('session-file-store')(session);
 
 // rquire all routes
 const homeRouter = require('./routes/home');
@@ -15,14 +13,6 @@ const authRouter = require('./routes/auth');
 app.set('view engine', 'ejs');
 
 // ------------------------------ middlewares ------------------------------ //
-//------ Use the session middleware //
-app.use(session({ 
-    store: new FileStore,
-    secret: 'safdiojes3453464j;rtje;rjht[erh]#r', 
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 60 * 1000 * 60 }
-})); 
 
 // ------ static files //
 app.use(express.static('public'));

@@ -1,5 +1,6 @@
 const fs = require('fs');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const handleSignUp = () => {
     return {
@@ -11,7 +12,7 @@ const handleSignUp = () => {
             const {userName, email, password} = req.body;
 
             if(!userName || !email || !password) {
-                console.log(userName + " " + email + " password");
+                console.log('All fileds are required');
                 return res.redirect('/signUp');
             }
 
@@ -23,7 +24,6 @@ const handleSignUp = () => {
             
                 try {
                     // Parse the JSON string into a JavaScript objectE
-                    console.log(data);
                     const usersArray = JSON.parse(data).users;
                     
                     const index = usersArray.findIndex( user => user.email === email);
@@ -35,7 +35,6 @@ const handleSignUp = () => {
                     user.id = Date.now();
                     bcrypt.hash(password, 10).then( hash => {
                         user.password = hash;
-                        console.log(user);
                         usersArray.push(user);
                 
                         // Convert the JavaScript object back to a JSON string
@@ -50,7 +49,7 @@ const handleSignUp = () => {
                     
                             console.log('user added successfully.');
                             res.status(201);
-                            return res.redirect('/');
+                            return res.redirect('/login');
                         });
                     });
                 } catch (err) {
@@ -69,7 +68,6 @@ const handleLogin = () => {
            const {email, password} = req.body;
 
            if(!email || !password) {
-                console.log(email + " " + password);
                 console.log('all fields are required');
                 return res.redirect('auth/login');
            }
@@ -101,9 +99,12 @@ const handleLogin = () => {
                         return res.redirect('auth/login');
                     }
 
-                    req.session.isAuthenticated = true;
+                    const secret = 'safdiojes3453464j;rtje;rjht[erh]#r';
+                    const accessToken = jwt.sign(email, secret);
+
+                    console.log(typeof accessToken);
                     console.log('Successfully logged In....');
-                    return res.redirect('/');
+                    return res.json({token: accessToken});
                 });
 
                 } catch (err) {
