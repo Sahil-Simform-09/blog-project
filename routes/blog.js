@@ -1,12 +1,13 @@
 const express  = require('express');
 const router = express.Router();
+const guest = require('../app/midlewares/guest');
 
 const {deleteBlogById, getAllBlog, getBlogById, createNewBlog,updateBlogById} = require('../app/controlllers/blog-controller');
 // get all blogs
 router.get('/', getAllBlog);
 
 // create a new blog
-router.get('/create', createNewBlog().index);
+router.get('/create', guest, createNewBlog().index);
 router.post('/create', createNewBlog().create);
 
 // update a particular blog

@@ -102,6 +102,7 @@ const handleLogin = () => {
                     }
 
                     req.session.isAuthenticated = true;
+                    req.session.user = usersArray[index];
                     console.log('Successfully logged In....');
                     return res.redirect('/');
                 });
@@ -125,7 +126,7 @@ const handleLogout = (req, res) => {
             }
 
             console.log('Logout successfully');
-            return res.redirect('auth/login');
+            return res.redirect('/auth/login');
         });
     }
 }

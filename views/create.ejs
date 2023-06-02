@@ -5,9 +5,6 @@
             <label for="title">Title:</label>
             <input type="text" id="title" name="title" required>
                     
-            <label for="author">Author:</label>
-            <input type="text" id="author" name="author" required>
-                    
             <label for="content">Content:</label>
             <textarea id="content" name="content" required rows="20" cols="500"></textarea>
                     
@@ -21,12 +18,12 @@
                 form.removeAttribute('method');
                 
                 const title = document.querySelector('#title'),
-                    author = document.querySelector('#author'),
                     content = document.querySelector('#content');
 
+                title.removeAttribute('required');
+                content.removeAttribute('required');
+
                 title.value = '<%= blog.title%>';
-                author.value = '<%= blog.author%>';
-                
                 content.value = String.raw`<%= blog.content%>`;
 
                 document.querySelector('form').addEventListener('submit', event => {
@@ -34,14 +31,13 @@
                 
                     const formData = {
                         title: title.value,
-                        author: author.value,
                         content: content.value,
                         id: Number(location.pathname.substring(6, location.pathname.length - 5))
                     }
                         
-                    console.log();
+                    console.log(location.pathname);
                     fetch(location.pathname, {
-                        method: 'PUT',
+                        method: 'PATCH',
                         headers: {
                             "Content-Type": "application/json",
                         },

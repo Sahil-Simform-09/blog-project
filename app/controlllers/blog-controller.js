@@ -24,6 +24,7 @@ const createNewBlog = () => {
                 const blogsArray = JSON.parse(data).blogs;
                 
                 blog.id = generateId();
+                blog.author = req.session.user.userName;
                 // Modify the specific property
                 blogsArray.push(blog);
         
@@ -81,34 +82,33 @@ const updateBlogById = () => {
             }
         
             try {
-                // Parse the JSON string into a JavaScript objectE
-                const blogsArray = JSON.parse(data).blogs;
+                  // Parse the JSON string into a JavaScript objectE
+                  const blogsArray = JSON.parse(data).blogs;
                 
-                const index = blogsArray.findIndex( oneBlog => oneBlog.id === Number(blog.id));
-                // Modify the specific property
-                const blogToUpdate = blogsArray[index];
-                blogToUpdate.title = blog.title;
-                blogToUpdate.author = blog.author;
-                blogToUpdate.content = blog.content;
-        
-                blogsArray.splice(index, 1, blogToUpdate);
-                // Convert the JavaScript object back to a JSON string
-                const jsonString = '{"blogs":' + JSON.stringify(blogsArray) +'}';
-        
-               // Write the JSON string back to the file
-                fs.writeFile('blog.json', jsonString, 'utf8', (err) => {
-                if (err) {
-                    console.error('Error writing to JSON file:', err);
-                    return res.json({"message": "Error writing to JSON file:", "status": "Error"});
-                }
-        
-                console.log('Data updated successfully.');
-                res.status(200);
-                return res.json({"message": "Data Deleted successfully.", "status": "ok"});
-                });
-            } catch (err) {
-                console.error('Error parsing JSON:', err);
-            }
+                  const index = blogsArray.findIndex( oneBlog => oneBlog.id === Number(blog.id));
+                  // Modify the specific property
+                  const blogToUpdate = blogsArray[index];
+                  blogToUpdate.title = blog.title.length === 0 ? blogToUpdate.title : blog.title;
+                  blogToUpdate.content = blog.content.length === 0 ? blogToUpdate.content : blog.content;
+                                  
+                  blogsArray.splice(index, 1, blogToUpdate);
+                  // Convert the JavaScript object back to a JSON string
+                  const jsonString = '{"blogs":' + JSON.stringify(blogsArray) +'}';
+          
+                 // Write the JSON string back to the file
+                  fs.writeFile('blog.json', jsonString, 'utf8', (err) => {
+                  if (err) {
+                      console.error('Error writing to JSON file:', err);
+                      return res.json({"message": "Error writing to JSON file:", "status": "Error"});
+                  }
+          
+                  console.log('Data updated successfully.');
+                  res.status(200);
+                  return res.json({"message": "Data Deleted successfully.", "status": "ok"});
+                  });
+              } catch (err) {
+                  console.error('Error parsing JSON:', err);
+              }
             }); 
         }
     }

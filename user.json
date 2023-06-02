@@ -5,6 +5,12 @@
             "email": "sahil.m@simformsolutions.com",
             "password": "$2b$10$KLTj6CwBs7pwNSfDm1A9G.zdnC1sgI4QHTJrHYmbvQ0kVFcC4MSye",
             "id": 1685609034801
+        },
+        {
+            "userName": "Sahil Mistry",
+            "email": "sahil@gmail.com",
+            "password": "$2b$10$QBdIh6pD43UCnkYrbnxUvO8Gxv.HwYI.fW4k1ua0IaBmTB8a6NkPm",
+            "id": 1685704733276
         }
     ]
 }
