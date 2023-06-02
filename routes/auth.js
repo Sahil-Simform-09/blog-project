@@ -1,8 +1,8 @@
 const express  = require('express');
 const router = express.Router();
-const auth = require('../midlewares/auth');
+const auth = require('../app/midlewares/auth');
 
-const {handleLogin, handleSignUp, handleLogout} = require('../controlllers/auth-controller');
+const {handleLogin, handleSignUp, handleLogout} = require('../app/controlllers/auth-controller');
 
 router.get('/login', auth, handleLogin().index);
 router.post('/login', handleLogin().postLogin);
