@@ -112,10 +112,21 @@ const handleLogin = () => {
                 }
             });
 
-        },
+        }            
     }
 }
 const handleLogout = (req, res) => {
-    res.render('index');
+    if(req.session) {
+        req.session.destroy(err => {
+            if(err) {
+                res.status(400);
+                console.log('Unable to logout');
+                return res.redirect('/logout');
+            }
+
+            console.log('Logout successfully');
+            return res.redirect('auth/login');
+        });
+    }
 }
 module.exports = {handleLogin, handleSignUp, handleLogout};
