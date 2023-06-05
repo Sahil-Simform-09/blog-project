@@ -12,29 +12,4 @@
             </form>
         </div>
     </body>
-    <script>
-        const form = document.querySelector('form');
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-            
-            const formData = {
-                email: document.querySelector('#email').value,
-                password: document.querySelector('#password').value
-            }
-            fetch('/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            }).then( response =>  response.json())
-              .then( jwtToken => {
-                    localStorage.setItem('token', jwtToken.token);
-              })
-              .catch( err => {
-                location = '/auth/login';
-                console.log(err);
-            });
-        });
-    </script>
 </html> 

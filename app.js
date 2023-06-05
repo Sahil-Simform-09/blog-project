@@ -1,7 +1,7 @@
+require('dotenv').config();
 const express  = require('express');
-const ejs = require('ejs');
 const app = express();
-
+const  cookieParser = require('cookie-parser');
 // rquire all routes
 const homeRouter = require('./routes/home');
 const userRouter = require('./routes/user');
@@ -20,6 +20,9 @@ app.use(express.static('public'));
 // ------ body parse middleware //
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+
+// ------ cookie parse middleware //
+app.use(cookieParser());
 
 // ------ route middlewares //
 app.use('/', homeRouter);

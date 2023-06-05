@@ -66,17 +66,16 @@ const handleLogin = () => {
         },
         postLogin(req, res) {
            const {email, password} = req.body;
-
            if(!email || !password) {
                 console.log('all fields are required');
-                return res.redirect('auth/login');
+                return res.redirect('/auth/login');
            }
 
 
            fs.readFile('user.json', 'utf8', (err, data) => {
             if (err) {
                 console.error('Error reading JSON file:', err);
-                return res.redirect('auth/login');
+                return res.redirect('/auth/login');
             }
         
             try {
@@ -88,28 +87,34 @@ const handleLogin = () => {
                 // check email exist in Database
                 if(index === -1) {
                     console.log(`User does not exist with email: ${email}`);
-                    return res.redirect('auth/login');
+                    return res.redirect('/auth/login');
                 }
-
                 const hashedUserPassword = usersArray[index].password
                 // check password
-                bcrypt.compare(password, hashedUserPassword).then(result => {
+                bcrypt.compare(password, hashedUserPassword)
+                .then( result => {
                     if(!result) {
                         console.log('Please provide correct password');
-                        return res.redirect('auth/login');
+                        return res.redirect('/auth/login');
                     }
 
-                    const secret = 'safdiojes3453464j;rtje;rjht[erh]#r';
-                    const accessToken = jwt.sign(email, secret);
+                    const secret = process.env.JWT_TOKEN_SECRET;
+                    const accessToken = jwt.sign({
+                        userId: email
+                    }, secret, { expiresIn: '2m' });
 
-                    console.log(typeof accessToken);
                     console.log('Successfully logged In....');
-                    return res.json({token: accessToken});
+                    req.userId = email;
+                    return res
+                        .cookie('access_token', accessToken, {
+                            httpOnly: true
+                        })
+                        .redirect('/');
                 });
 
                 } catch (err) {
                     console.error('Error parsing JSON:', err);
-                    return res.redirect('auth/login');
+                    return res.redirect('/auth/login');
                 }
             });
 
@@ -117,6 +122,8 @@ const handleLogin = () => {
     }
 }
 const handleLogout = (req, res) => {
-    res.render('index');
+    return res
+            .clearCookie('access_token')
+            .redirect('/auth/login');
 }
 module.exports = {handleLogin, handleSignUp, handleLogout};
