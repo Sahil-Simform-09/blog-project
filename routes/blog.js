@@ -1,34 +1,24 @@
 const express  = require('express');
-const fs = require('fs');
 const router = express.Router();
+const guest = require('../app/midlewares/guest');
 
-router.get('/', (req, res) => {
-    fs.readFile('blog.json', (err, blogs) => {
-        if(!err) {
-            res.json(JSON.parse(blogs));
-            res.end();
-        } else {
-            console.log(err);
-        }
-    });
-});
+const {deleteBlogById, getAllBlog, getBlogById, createNewBlog,updateBlogById} = require('../app/controlllers/blog-controller');
+// get all blogs
+router.get('/', getAllBlog);
 
-router.get('/:blogId([0-9]{5})', (req, res) => {
-    const {blogId} = req.params;
-    fs.readFile('blog.json', (err, blogs) => {
-        if(!err) {
-            const blogObject = JSON.parse(blogs).blogs;
-            const index = blogObject.findIndex( blog => blog.id === Number(blogId));
-            
-            if(index !== -1) {
-                res.json(blogObject[index]);
-            } else {
-                res.send(`blog with id ${blogId} does not exist`);
-            }
-        } else {
-            console.log(err);
-        }
-    });
-});
+// create a new blog
+router.get('/create', guest, createNewBlog().index);
+router.post('/create', createNewBlog().create);
+
+// update a particular blog
+router.get('/:id/edit',updateBlogById().index);
+router.put('/:id/edit', updateBlogById().update);
+
+// delete a new blog
+router.delete('/:blogId/delete', deleteBlogById);
+
+
+// get particular blogs by id
+router.get('/:blogId', getBlogById);
 
 module.exports = router;

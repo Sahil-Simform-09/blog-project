@@ -1,36 +1,26 @@
 {
     "blogs": [
         {
-            "id": 12345,   
-            "title": "Getting Started with Express.js",
-            "author": "John Doe",
-            "date": "2022-01-15",
-            "content": "Express.js is a popular web application framework for Node.js...",
-            "tags": ["Node.js", "Express.js", "Web Development"]
+            "title": "Angular",
+            "author": "Sahil",
+            "content": "Angular is a TypeScript-based, free and open-source web application framework led by the Angular Team at Google and by a community of individuals and corporations. Angular is a complete rewrite from the same team that built AngularJS. \n\nWikipedia",
+            "id": 1685354370218
         },
         {
-            "id": 12395,
-            "title": "10 Tips for Effective Time Management",
-            "author": "Jane Smith",
-            "date": "2022-03-28",
-            "content": "Time management is crucial for productivity and success...",
-            "tags": ["Productivity", "Time Management"]
+            "title": "bcrypt",
+            "author": "Sahil",
+            "content": "As should be the case with any security tool, anyone using this library should scrutinise it. If you find or suspect an issue with the code, please bring it to the maintainers' attention. We will spend some time ensuring that this library is as secure as possible.\n\nHere is a list of BCrypt-related security issues/concerns that have come up over the years.\n\nAn issue with passwords was found with a version of the Blowfish algorithm developed for John the Ripper. This is not present in the OpenBSD version and is thus not a problem for this module. HT zooko.\nVersions < 5.0.0 suffer from bcrypt wrap-around bug and will truncate passwords >= 255 characters leading to severely weakened passwords. Please upgrade at earliest. See this wiki page for more details.\nVersions < 5.0.0 do not handle NUL characters inside passwords properly leading to all subsequent characters being dropped and thus resulting in severely weakened passwords. Please upgrade at earliest. See this wiki page for more details.",
+            "id": 1685429780015
         },
         {
-            "id": 17345,
-            "title": "Introduction to React Hooks",
-            "author": "Samuel Johnson",
-            "date": "2022-05-10",
-            "content": "React Hooks revolutionized the way we write components...",
-            "tags": ["React", "JavaScript", "Front-end Development"]
+            "title": "Jwt",
+            "content": "secretOrPrivateKey is a string (utf-8 encoded), buffer, object, or KeyObject containing either the secret for HMAC algorithms or the PEM encoded private key for RSA and ECDSA. In case of a private key with passphrase an object { key, passphrase } can be used (based on crypto documentation), in this case be sure you pass the algorithm option. When signing with RSA algorithms the minimum modulus length is 2048 except when the allowInsecureKeySizes option is set to true. Private keys below this size will be rejected with an error.\n\noptions:\n\nalgorithm (default: HS256)\nexpiresIn: expressed in seconds or a string describing a time span vercel/ms.\nEg: 60, &#34;2 days&#34;, &#34;10h&#34;, &#34;7d&#34;. A numeric value is interpreted as a seconds count. If you use a string be sure you provide the time units (days, hours, etc), otherwise milliseconds unit is used by default (&#34;120&#34; is equal to &#34;120ms&#34;).",
+            "id": 1685706440323
         },
         {
-            "id": 10345,
-            "title": "The Benefits of Regular Exercise",
-            "author": "Emily Brown",
-            "date": "2022-06-15",
-            "content": "Regular exercise has numerous benefits for physical and mental health...",
-            "tags": ["Health", "Fitness", "Wellness"]
-        }       
+            "title": "session",
+            "content": "\nRemember that exp, nbf and iat are NumericDate, see related Token Expiration (exp claim)\n\nThe header can be customized via the options.header object.\n\nGenerated jwts will include an iat (issued at) claim by default unless noTimestamp is specified. If iat is inserted in the payload, it will be used instead of the real timestamp for calculating other things like exp given a timespan in options.expiresIn.\n\nSynchronous Sign with default (HMAC SHA256)\n\nvar jwt = require(&#39;jsonwebtoken&#39;);\nvar token = jwt.sign({ foo: &#39;bar&#39; }, &#39;shhhhh&#39;);",
+            "id": 1685706703927
+        }
     ]
-}  
+}
