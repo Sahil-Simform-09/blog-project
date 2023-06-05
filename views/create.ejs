@@ -20,15 +20,11 @@
                 const title = document.querySelector('#title'),
                     content = document.querySelector('#content');
 
-                title.removeAttribute('required');
-                content.removeAttribute('required');
-
-                title.value = '<%= blog.title%>';
+                title.value = '<%= blog.title%>';                
                 content.value = String.raw`<%= blog.content%>`;
 
                 document.querySelector('form').addEventListener('submit', event => {
                     event.preventDefault();
-                
                     const formData = {
                         title: title.value,
                         content: content.value,

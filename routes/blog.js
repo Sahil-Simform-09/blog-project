@@ -12,7 +12,7 @@ router.post('/create', createNewBlog().create);
 
 // update a particular blog
 router.get('/:id/edit',updateBlogById().index);
-router.put('/:id/edit', updateBlogById().update);
+router.patch('/:id/edit', updateBlogById().update);
 
 // delete a new blog
 router.delete('/:blogId/delete', deleteBlogById);
