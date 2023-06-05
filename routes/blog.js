@@ -11,8 +11,8 @@ router.get('/create', guest, createNewBlog().index);
 router.post('/create', createNewBlog().create);
 
 // update a particular blog
-router.get('/:id/edit', guest, updateBlogById().index);
-router.put('/:id/edit', updateBlogById().update);
+router.get('/:id/edit',updateBlogById().index);
+router.patch('/:id/edit', updateBlogById().update);
 
 // delete a new blog
 router.delete('/:blogId/delete', deleteBlogById);
