@@ -8,7 +8,7 @@ router.get('/login', auth, handleLogin().index);
 router.post('/login', handleLogin().postLogin);
 router.get('/logout', handleLogout);
 
-router.get('/signUp', auth, handleSignUp().index);
+router.get('/signUp', handleSignUp().index);
 router.post('/signUp', handleSignUp().postSignUp);
 
 module.exports = router; 

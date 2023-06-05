@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express  = require('express');
 const ejs = require('ejs');
 const app = express();
@@ -18,7 +19,7 @@ app.set('view engine', 'ejs');
 //------ Use the session middleware //
 app.use(session({ 
     store: new FileStore,
-    secret: 'safdiojes3453464j;rtje;rjht[erh]#r', 
+    secret: process.env.COOKIE_SECRET, 
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 60 * 1000 * 60 }
