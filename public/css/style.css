@@ -179,3 +179,14 @@ input[type="submit"]:hover {
   font-size: 16px;
   margin-bottom: 5px;
 }
+
+.err {
+  background-color: rgb(221, 122, 122);
+  color: black;
+  text-align: center;
+  width: 600px;
+  height: 70px;
+  margin: auto;
+  padding: 10px;
+  margin-top: 50px;
+}

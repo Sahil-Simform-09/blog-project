@@ -1,18 +1,26 @@
 const fs = require('fs');
 const bcrypt = require('bcrypt');
+const {validationResult} = require('express-validator');
 
 const handleSignUp = () => {
     return {
         index(req, res) {
-            res.render('signUp');
+            res.render('signUp', { userName: '', email: '', password: '', errors: 'none' });
         },
         postSignUp(req, res) {
             const user = req.body;
             const {userName, email, password} = req.body;
 
             if(!userName || !email || !password) {
-                console.log(userName + " " + email + " password");
-                return res.redirect('/signUp');
+                console.log('all fields required');
+                return res.render('signUp', { userName: userName, email: email, password: password, errors: '' });
+            }
+
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                // Return the validation errors
+                console.log(errors.array());
+                return res.render('signUp', { userName: userName, email: email, password: password, errors: errors.array()[0].msg });
             }
 
             fs.readFile('user.json', 'utf8', (err, data) => {
@@ -22,20 +30,10 @@ const handleSignUp = () => {
                 }
             
                 try {
-                    // Parse the JSON string into a JavaScript objectE
-                    console.log(data);
-                    const usersArray = JSON.parse(data).users;
-                    
-                    const index = usersArray.findIndex( user => user.email === email);
-
-                    if(index !== -1) {
-                        return res.redirect('/signUp');
-                    }
-
+                    const usersArray = JSON.parse(data).users;  
                     user.id = Date.now();
                     bcrypt.hash(password, 10).then( hash => {
                         user.password = hash;
-                        console.log(user);
                         usersArray.push(user);
                 
                         // Convert the JavaScript object back to a JSON string
@@ -69,16 +67,21 @@ const handleLogin = () => {
            const {email, password} = req.body;
 
            if(!email || !password) {
-                console.log(email + " " + password);
                 console.log('all fields are required');
-                return res.redirect('auth/login');
+                return res.render('login');
            }
 
+           const errors = validationResult(req);
+           if (!errors.isEmpty()) {
+               // Return the validation errors
+               console.log(errors.array());
+               return res.render('login', { email: email, password: password, errors: errors.array()[0].msg });
+           }
 
            fs.readFile('user.json', 'utf8', (err, data) => {
             if (err) {
                 console.error('Error reading JSON file:', err);
-                return res.redirect('auth/login');
+                return res.redirect('/auth/login');
             }
         
             try {
@@ -90,7 +93,7 @@ const handleLogin = () => {
                 // check email exist in Database
                 if(index === -1) {
                     console.log(`User does not exist with email: ${email}`);
-                    return res.redirect('auth/login');
+                    return res.redirect('/auth/login');
                 }
 
                 const hashedUserPassword = usersArray[index].password
@@ -98,7 +101,7 @@ const handleLogin = () => {
                 bcrypt.compare(password, hashedUserPassword).then(result => {
                     if(!result) {
                         console.log('Please provide correct password');
-                        return res.redirect('auth/login');
+                        return res.redirect('/auth/login');
                     }
 
                     req.session.isAuthenticated = true;
@@ -109,7 +112,7 @@ const handleLogin = () => {
 
                 } catch (err) {
                     console.error('Error parsing JSON:', err);
-                    return res.redirect('auth/login');
+                    return res.redirect('/auth/login');
                 }
             });
 
