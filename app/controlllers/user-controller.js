@@ -26,7 +26,7 @@ const handleUserProfile = (req, res) => {
             fs.readFile('blog.json', (err, blogs) => {
                 if(!err) {
                     const blogsArray = JSON.parse(blogs.toString()).blogs;
-                    const LoggedInUserBlogsArray = blogs.filter( blog => blog.author === req.session.user.userName );
+                    const LoggedInUserBlogsArray = blogsArray.filter( blog => blog.author === req.session.user.userName );
                     res.render('profile', {blogs: LoggedInUserBlogsArray, user: usersArray[index]});
                 } else {
                     console.log(err);
