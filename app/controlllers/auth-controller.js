@@ -65,19 +65,55 @@ const handleLogin = () => {
         },
         postLogin(req, res) {
            const {email, password} = req.body;
-
+            console.log('email', email);
+            console.log('password', password);
            if(!email || !password) {
                 console.log('all fields are required');
                 return res.render('login');
            }
+           fs.readFile('user.json', 'utf8', (err, data) => {
+            if (err) {
+                console.error('Error reading JSON file:', err);
+                return res.render('login');
+            }
+        
+            try {
+                // Parse the JSON string into a JavaScript objectE
+                const usersArray = JSON.parse(data).users;
+                
+                const index = usersArray.findIndex( user => user.email === email);
 
+                // check email exist in Database
+                if(index === -1) {
+                    console.log(`User does not exist with email: ${email}`);
+                    return res.render('login');
+                }
+
+                const hashedUserPassword = usersArray[index].password
+                // check password
+                bcrypt.compare(password, hashedUserPassword).then(result => {
+                    if(!result) {
+                        console.log('Please provide correct password');
+                        return res.render('login');
+                    }
+
+                    req.session.isAuthenticated = true;
+                    req.session.user = usersArray[index];
+                    console.log('Successfully logged In....');
+                    return res.redirect('/');
+                });
+
+                } catch (err) {
+                    console.error('Error parsing JSON:', err);
+                    return res.render('login');
+                }
+            });
            const errors = validationResult(req);
            if (!errors.isEmpty()) {
                // Return the validation errors
                console.log(errors.array());
                return res.render('login', { email: email, password: password, errors: errors.array()[0].msg });
            }
-
         }            
     }
 }

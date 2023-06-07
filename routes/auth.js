@@ -8,8 +8,8 @@ const {handleLogin, handleSignUp, handleLogout} = require('../app/controlllers/a
 router.get('/login', auth, handleLogin().index);
 router.post(
     '/login', [
-        body('emai').isEmpty().withMessage('Email is required').normalizeEmail(),
-        body('password').isEmpty().withMessage('Password is required').trim()
+        body('email', 'Email is required').notEmpty().normalizeEmail(),
+        body('password', 'Password is required').notEmpty().trim()
     ], handleLogin().postLogin);
 router.get('/logout', handleLogout);
 
