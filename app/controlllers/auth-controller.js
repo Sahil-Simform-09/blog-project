@@ -78,44 +78,6 @@ const handleLogin = () => {
                return res.render('login', { email: email, password: password, errors: errors.array()[0].msg });
            }
 
-           fs.readFile('user.json', 'utf8', (err, data) => {
-            if (err) {
-                console.error('Error reading JSON file:', err);
-                return res.redirect('/auth/login');
-            }
-        
-            try {
-                // Parse the JSON string into a JavaScript objectE
-                const usersArray = JSON.parse(data).users;
-                
-                const index = usersArray.findIndex( user => user.email === email);
-
-                // check email exist in Database
-                if(index === -1) {
-                    console.log(`User does not exist with email: ${email}`);
-                    return res.redirect('/auth/login');
-                }
-
-                const hashedUserPassword = usersArray[index].password
-                // check password
-                bcrypt.compare(password, hashedUserPassword).then(result => {
-                    if(!result) {
-                        console.log('Please provide correct password');
-                        return res.redirect('/auth/login');
-                    }
-
-                    req.session.isAuthenticated = true;
-                    req.session.user = usersArray[index];
-                    console.log('Successfully logged In....');
-                    return res.redirect('/');
-                });
-
-                } catch (err) {
-                    console.error('Error parsing JSON:', err);
-                    return res.redirect('/auth/login');
-                }
-            });
-
         }            
     }
 }
