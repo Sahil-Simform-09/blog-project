@@ -42,4 +42,7 @@ app.use('/user', userRouter);
 app.use('/admin', adminRouter);
 app.use('/auth', authRouter);
 
+app.use((error, req, res, next) => {
+    res.redirect('/');
+});
 app.listen(3000, () => console.log('server is listing on port 3000'));
