@@ -12,6 +12,9 @@ const adminRouter = require('./routes/admin');
 const blogRouter = require('./routes/blog');
 const authRouter = require('./routes/auth');
 
+// require error middleare
+const helper = require('./app/midlewares/helper');
+
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
 
@@ -42,7 +45,12 @@ app.use('/user', userRouter);
 app.use('/admin', adminRouter);
 app.use('/auth', authRouter);
 
-app.use((error, req, res, next) => {
-    res.redirect('/');
-});
+app.use((req, res, next) => {
+    const error = new Error('Page not found');
+    error.httpStatusCode = 404;
+    throw error;
+})
+
+// ------ error handler middleware //
+app.use(helper);
 app.listen(3000, () => console.log('server is listing on port 3000'));

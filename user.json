@@ -1,1 +1,10 @@
-{"users":[{"userName":"sahil Mistry","email":"sahil@gmail.com","password":"$2b$10$3fB1hrp/hreZlUiZAut2VeXQzU7D3P0mradHSre72vd4iR7wdwM9G","id":1686119912279}]}
+{
+    "users": [
+        {
+            "userName": "sahil Mistry",
+            "email": "sahil@gmail.com",
+            "password": "$2b$10$3fB1hrp/hreZlUiZAut2VeXQzU7D3P0mradHSre72vd4iR7wdwM9G",
+            "id": 1686119912279
+        }
+    ]
+}

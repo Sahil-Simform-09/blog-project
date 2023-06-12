@@ -10,12 +10,10 @@ const createNewBlog = () => {
         index(req, res) {
             res.render('create', {whichWork: 'create'});
         },
-        async create(req, res) {
-
-            const blog = req.body;
-
+        async create(req, res, next) {
             try {
-                const data = await fs.readFile('blog.json', 'utf-8');
+                const blog = req.body;
+                const data = await fs.readFile('log.json', 'utf-8');
                 const blogsArray = JSON.parse(data).blogs;
 
                 blog.id = generateId();
@@ -27,27 +25,93 @@ const createNewBlog = () => {
                 const jsonString = '{"blogs":' + JSON.stringify(blogsArray) +'}';
         
                 // Write the JSON string back to the file
-                try {
-                    await fs.writeFile('blog.json', jsonString, 'utf8');
-                } catch (error) {
-                    console.log(error);
-                }
+                await fs.writeFile('blog.json', jsonString, 'utf8');
         
-                console.log('Data written successfully.');
                 return res.redirect('/user/profile');
             } catch(error) {
-                console.log('Error reading JSON file:', err);
-                return res.end();
+                const err = new Error(error);
+                err.httpStatusCode = 500;
+                next(err);
             }
         }
     }
 }
-const getAllBlog = async (req, res) => {
+const updateBlogById = () => {
+    return {
+        async index(req, res, next) {            
+            try {
+                const {blogId} = req.params;
+                const data = await fs.readFile('blog.json', 'utf8');
+                // Parse the JSON string into a JavaScript objectE
+                const blogsArray = JSON.parse(data).blogs;
+                
+                const index = blogsArray.findIndex( oneBlog => oneBlog.id === Number(blogId));
+                const blogToUpdate = blogsArray[index];
+                res.render('create', {whichWork: 'edit', blog: blogToUpdate});
+            } catch (error) {
+                const err = new Error(error);
+                err.httpStatusCode = 500;
+                next(err);
+            }
+        },
+        async update(req, res, next) {
+            try {
+                const blog = req.body;
+                const data = await fs.readFile('blog.json', 'utf8');
+            
+                // Parse the JSON string into a JavaScript objectE
+                const blogsArray = JSON.parse(data).blogs;
+                    
+                const index = blogsArray.findIndex( oneBlog => oneBlog.id === Number(blog.id));
+                    
+                // Modify the specific property
+                const blogToUpdate = blogsArray[index];
+                blogToUpdate.title = blog.title;
+                blogToUpdate.content = blog.content;
+            
+                blogsArray.splice(index, 1, blogToUpdate);
+                    // Convert the JavaScript object back to a JSON string
+                const jsonString = '{"blogs":' + JSON.stringify(blogsArray) +'}';
+                
+                // Write the JSON string back to the file
+                await fs.writeFile('blog.json', jsonString, 'utf8');
+                return res.redirect('/user/profile', {"message": "Data updated successfully.", "status": "ok"});
+            } catch (error) {
+                const err = new Error(error);
+                err.httpStatusCode = 500;
+                next(err);
+            }
+        }
+    }
+}
+const deleteBlogById = async (req, res, next) => {
+    try {
+        const {blogId} = req.params;
+        const data = await fs.readFile('blog.json', 'utf8');
+
+        const blogsArray = JSON.parse(data).blogs;
+        const index = blogsArray.findIndex( blog => blog.id === Number(blogId));
+            
+        blogsArray.splice(index, 1);
+        // Convert the JavaScript object back to a JSON string
+        const jsonString = '{"blogs":' + JSON.stringify(blogsArray) + '}'; 
+            
+        await fs.writeFile('blog.json', jsonString, 'utf8');                
+        return res.redirect('/user/profile' ,{"message": "Data Deleted successfully.", "status": "ok"});     
+    } catch (error) {
+        const err = new Error(error);
+        err.httpStatusCode = 500;
+        next(err);
+    }
+}
+const getAllBlog = async (req, res, next) => {
     try {
         const blogs = await fs.readFile('blog.json', 'utf-8');
         res.render('blogs', {blogs: JSON.parse(blogs.toString()).blogs});
     } catch (error) {
-        console.log(error);
+        const err = new Error(error);
+        err.httpStatusCode = 500;
+        next(err);
     }
 }
-module.exports = {getAllBlog, getBlogById, createNewBlog};
+module.exports = {getAllBlog, getBlogById, deleteBlogById, updateBlogById, createNewBlog};

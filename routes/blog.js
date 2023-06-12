@@ -1,9 +1,8 @@
 const express  = require('express');
 const router = express.Router();
 const guest = require('../app/midlewares/guest');
-const { body } = require('express-validator');
 
-const {getAllBlog, getBlogById, createNewBlog} = require('../app/controlllers/blog-controller');
+const {getAllBlog, getBlogById, createNewBlog, updateBlogById, deleteBlogById} = require('../app/controlllers/blog-controller');
 // get all blogs
 router.get('/', getAllBlog);
 
@@ -14,4 +13,10 @@ router.post('/create', createNewBlog().create);
 // get particular blogs by id
 router.get('/:blogId', getBlogById);
 
+// update a particular blog
+router.get('/:blogId/edit',updateBlogById().index);
+router.patch('/:blogId/edit', updateBlogById().update);
+
+// delete a new blog
+router.delete('/:blogId/delete', deleteBlogById);
 module.exports = router;
