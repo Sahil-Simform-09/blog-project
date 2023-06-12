@@ -1,62 +1,44 @@
-const fs = require('fs');
+const fs = require('fs/promises');
 const bcrypt = require('bcrypt');
+const {validationResult} = require('express-validator');
 
 const handleSignUp = () => {
     return {
         index(req, res) {
-            res.render('signUp');
+            res.render('signUp', { userName: '', email: '', password: '', errors: 'none' });
         },
-        postSignUp(req, res) {
+        async postSignUp(req, res, next) {
             const user = req.body;
             const {userName, email, password} = req.body;
 
-            if(!userName || !email || !password) {
-                console.log(userName + " " + email + " password");
-                return res.redirect('/signUp');
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                // Return the validation errors
+                return res.render('signUp', { userName: userName, email: email, password: password, errors: errors.array()[0].msg });
             }
 
-            fs.readFile('user.json', 'utf8', (err, data) => {
-                if (err) {
-                    console.error('Error reading JSON file:', err);
-                    return res.end();
-                }
+            try {
+                const data = await fs.readFile('user.json', 'utf8');
             
-                try {
-                    // Parse the JSON string into a JavaScript objectE
-                    console.log(data);
-                    const usersArray = JSON.parse(data).users;
-                    
-                    const index = usersArray.findIndex( user => user.email === email);
+                const usersArray = JSON.parse(data).users;  
+                user.id = Date.now();
 
-                    if(index !== -1) {
-                        return res.redirect('/signUp');
-                    }
-
-                    user.id = Date.now();
-                    bcrypt.hash(password, 10).then( hash => {
-                        user.password = hash;
-                        console.log(user);
-                        usersArray.push(user);
+                user.password = await bcrypt.hash(password)
+                usersArray.push(user);
                 
-                        // Convert the JavaScript object back to a JSON string
-                        const jsonString = '{"users":' + JSON.stringify(usersArray) +'}';
+                // Convert the JavaScript object back to a JSON string
+                const jsonString = '{"users":' + JSON.stringify(usersArray) +'}';
                 
-                        // Write the JSON string back to the file
-                        fs.writeFile('user.json', jsonString, 'utf8', (err) => {
-                            if (err) {
-                                console.error('Error writing to JSON file:', err);
-                                return res.end();
-                            }
+                // Write the JSON string back to the file
+                await fs.writeFile('user.json', jsonString, 'utf8');
                     
-                            console.log('user added successfully.');
-                            res.status(201);
-                            return res.redirect('/');
-                        });
-                    });
-                } catch (err) {
-                    console.error('Error parsing JSON:', err);
-                }
-            });
+                console.log('user added successfully.');
+                return res.redirect('/auth/login');
+            } catch (error) {
+                const err = new Error(error);
+                err.httpStatusCode = 500;
+                next(err);
+            }
         },
     }
 }
@@ -65,23 +47,19 @@ const handleLogin = () => {
         index(req, res) {
             res.render('login');
         },
-        postLogin(req, res) {
-           const {email, password} = req.body;
-
-           if(!email || !password) {
-                console.log(email + " " + password);
-                console.log('all fields are required');
-                return res.redirect('auth/login');
-           }
-
-
-           fs.readFile('user.json', 'utf8', (err, data) => {
-            if (err) {
-                console.error('Error reading JSON file:', err);
-                return res.redirect('auth/login');
+        async postLogin(req, res, next) {
+            const {email, password} = req.body;
+            
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                // Return the validation errors
+                console.log(errors.array());
+                return res.render('login', { email: email, password: password, errors: errors.array()[0].msg });
             }
-        
+
             try {
+                const data = await fs.readFile('user.json', 'utf8');
+        
                 // Parse the JSON string into a JavaScript objectE
                 const usersArray = JSON.parse(data).users;
                 
@@ -90,44 +68,37 @@ const handleLogin = () => {
                 // check email exist in Database
                 if(index === -1) {
                     console.log(`User does not exist with email: ${email}`);
-                    return res.redirect('auth/login');
+                    return res.render('login',  { email: email, password: password, errors: errors.array()[0].msg });
                 }
 
                 const hashedUserPassword = usersArray[index].password
                 // check password
-                bcrypt.compare(password, hashedUserPassword).then(result => {
-                    if(!result) {
-                        console.log('Please provide correct password');
-                        return res.redirect('auth/login');
-                    }
-
-                    req.session.isAuthenticated = true;
-                    req.session.user = usersArray[index];
-                    console.log('Successfully logged In....');
-                    return res.redirect('/');
-                });
-
-                } catch (err) {
-                    console.error('Error parsing JSON:', err);
-                    return res.redirect('auth/login');
+                const result = await bcrypt.compare(password, hashedUserPassword);
+                if(!result) {
+                    console.log('Please provide correct password', { email: email, password: password, errors: errors.array()[0].msg });
+                    return res.render('login');
                 }
-            });
 
+                req.session.isAuthenticated = true;
+                req.session.user = usersArray[index];
+                return res.redirect('/user/profile');
+            } catch (error) {
+                const err = new Error(error);
+                err.httpStatusCode = 500;
+                next(err);
+            }
         }            
     }
 }
-const handleLogout = (req, res) => {
-    if(req.session) {
-        req.session.destroy(err => {
-            if(err) {
-                res.status(400);
-                console.log('Unable to logout');
-                return res.redirect('/logout');
-            }
+const handleLogout = (req, res, next) => {
+    req.session.destroy(err => {
+        if(err) {
+            const err = new Error(err);
+            err.httpStatusCode = 500;
+            next(err);
+        }
 
-            console.log('Logout successfully');
-            return res.redirect('/auth/login');
-        });
-    }
+        return res.redirect('/auth/login');
+    });
 }
 module.exports = {handleLogin, handleSignUp, handleLogout};

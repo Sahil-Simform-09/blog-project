@@ -2,7 +2,7 @@ const express  = require('express');
 const router = express.Router();
 const guest = require('../app/midlewares/guest');
 
-const {deleteBlogById, getAllBlog, getBlogById, createNewBlog,updateBlogById} = require('../app/controlllers/blog-controller');
+const {getAllBlog, getBlogById, createNewBlog, updateBlogById, deleteBlogById} = require('../app/controlllers/blog-controller');
 // get all blogs
 router.get('/', getAllBlog);
 
@@ -10,15 +10,13 @@ router.get('/', getAllBlog);
 router.get('/create', guest, createNewBlog().index);
 router.post('/create', createNewBlog().create);
 
-// update a particular blog
-router.get('/:id/edit',updateBlogById().index);
-router.put('/:id/edit', updateBlogById().update);
-
-// delete a new blog
-router.delete('/:blogId/delete', deleteBlogById);
-
-
 // get particular blogs by id
 router.get('/:blogId', getBlogById);
 
+// update a particular blog
+router.get('/:blogId/edit',updateBlogById().index);
+router.patch('/:blogId/edit', updateBlogById().update);
+
+// delete a new blog
+router.delete('/:blogId/delete', deleteBlogById);
 module.exports = router;
