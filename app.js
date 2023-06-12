@@ -4,6 +4,7 @@ const app = express();
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const helmet = require('helmet');
+const multer = require('multer');
 
 // rquire all routes
 const homeRouter = require('./routes/home');
@@ -37,6 +38,7 @@ app.use(express.static('public'));
 // ------ body parse middleware //
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+app.use(multer().single("profile-img"));
 
 // ------ route middlewares //
 app.use('/', homeRouter);

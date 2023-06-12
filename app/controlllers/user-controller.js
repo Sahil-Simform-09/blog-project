@@ -46,5 +46,14 @@ const getBlogById = async (req, res, next) => {
         next(err)
     }
 }
-
-module.exports = {handleUserProfile, getBlogById};
+const handleUserProfileImage = (req, res, next) => {
+    try {
+        console.log(req.file);
+        res.redirect('/user/profile');
+    } catch (error) {
+        const err = new Error(error); 
+        err.httpStatusCode = 500;
+        next(err);
+    }   
+}
+module.exports = {handleUserProfile, getBlogById, handleUserProfileImage};
