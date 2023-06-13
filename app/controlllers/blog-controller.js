@@ -13,7 +13,7 @@ const createNewBlog = () => {
         async create(req, res, next) {
             try {
                 const blog = req.body;
-                const data = await fs.readFile('log.json', 'utf-8');
+                const data = await fs.readFile('blog.json', 'utf-8');
                 const blogsArray = JSON.parse(data).blogs;
 
                 blog.id = generateId();

@@ -1,1 +1,5 @@
-{"blogs":[{"title":"Nodejs","content":" to match & call routes _before_ continuing\r\n// on, at which point we assume it's a 404 because\r\n// no route has handled the request.\r\n\r\napp.use(app.router);\r\n\r\n// Since this is the last non-error-handling\r\n// middleware use()d, we assume 404, as nothing else\r\n// responded.\r\n\r\n// $ curl http://localhost:3000/notfound\r\n// $ curl http://localhost:3000/notfound -H \"Accept: application/json\"\r\n// $ curl http://localhost:3000/notfound -H \"Accept: text/plain\"\r\n\r\napp.use(function(req, res, next) {\r\n  res.status(404);","id":1686565956085,"author":"sahil Mistry"}]}
+{
+    "blogs": [
+
+    ]
+}

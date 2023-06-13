@@ -2,22 +2,13 @@ const fs = require('fs/promises');
 
 const handleUserProfile = async (req, res, next) => { 
     try {
-        const data = await fs.readFile('user.json', 'utf8');
-
-        // Parse the JSON string into a JavaScript objectE
-        const usersArray = JSON.parse(data).users;
-
-        const index = usersArray.findIndex( user => user.email === req.session.user.email);
-
-        // check email exist in Database
-        if(index === -1) {
-            return res.render('login',  { email: email, password: password, errors: `User does not exist with email: ${email}`});
-        }
-
         const blogs = await fs.readFile('blog.json', 'utf-8');
         const blogsArray = JSON.parse(blogs.toString()).blogs;
         const LoggedInUserBlogsArray = blogsArray.filter( blog => blog.author === req.session.user.userName );
-        res.render('profile', {blogs: LoggedInUserBlogsArray, user: usersArray[index]});
+        res.render('profile', {
+            blogs: LoggedInUserBlogsArray,
+            user: req.session.user,
+        });
 
     } catch (error) {
         const err = new Error(error);
@@ -46,10 +37,23 @@ const getBlogById = async (req, res, next) => {
         next(err)
     }
 }
-const handleUserProfileImage = (req, res, next) => {
+const handleUserProfileImage = async (req, res, next) => {
     try {
-        console.log(req.file);
-        res.redirect('/user/profile');
+        const data = await fs.readFile('user.json', 'utf-8');
+        const usersArray = JSON.parse(data).users;
+                
+        const index = usersArray.findIndex( user => user.email === req.session.user.email);
+        const user = usersArray[index];
+        user.imgUrl = '/uploads/' + req.file.filename;
+
+        usersArray.splice(index, 1, user);
+        const jsonString = '{"users":' + JSON.stringify(usersArray) +'}';
+        
+        req.session.user.imgUrl = '/uploads/' + req.file.filename;
+
+        await fs.writeFile('user.json', jsonString, 'utf8');
+
+        return res.redirect('/user/profile');
     } catch (error) {
         const err = new Error(error); 
         err.httpStatusCode = 500;

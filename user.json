@@ -1,10 +1,1 @@
-{
-    "users": [
-        {
-            "userName": "sahil Mistry",
-            "email": "sahil@gmail.com",
-            "password": "$2b$10$3fB1hrp/hreZlUiZAut2VeXQzU7D3P0mradHSre72vd4iR7wdwM9G",
-            "id": 1686119912279
-        }
-    ]
-}
+{"users":[{"userName":"Bhagvanji Nakum","email":"bhagvanji@gmail.com","password":"$2b$10$yDcuAyhuk8qeQ3S/5vhwLeWDf8eaKtZucvbN2zlIx5OOJ479kD76O","id":1686636329586,"imgUrl":"/uploads/profile-img-1686637057007.png"},{"userName":"sahil","email":"sahil@gmail.com","password":"$2b$10$dqaCzFLI/6W0.eR0wn337uTgH9ZfbTuTfzMhDcCF/O1PryrDOUUta","id":1686637401830,"imgUrl":"/uploads/profile-img-1686637423442.png"}]}
