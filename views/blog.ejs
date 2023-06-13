@@ -7,43 +7,20 @@
                     <h4><%= blog.author %></h4>
                     <p><%= blog.content %></p>
                 </div>
-                <div class="blog-button">
-                    <button class="btn" id="delete">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><path fill="#000" d="M15 3a1 1 0 0 1 1 1h2a1 1 0 1 1 0 2H6a1 1 0 0 1 0-2h2a1 1 0 0 1 1-1h6Z"></path><path fill="#000" fill-rule="evenodd" d="M6 7h12v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7Zm3.5 2a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 1 0v-9a.5.5 0 0 0-.5-.5Zm5 0a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 1 0v-9a.5.5 0 0 0-.5-.5Z" clip-rule="evenodd"></path></svg>
-                    </button>
-                    <button class="btn" id="edit">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5,18H9.24a1,1,0,0,0,.71-.29l6.92-6.93h0L19.71,8a1,1,0,0,0,0-1.42L15.47,2.29a1,1,0,0,0-1.42,0L11.23,5.12h0L4.29,12.05a1,1,0,0,0-.29.71V17A1,1,0,0,0,5,18ZM14.76,4.41l2.83,2.83L16.17,8.66,13.34,5.83ZM6,13.17l5.93-5.93,2.83,2.83L8.83,16H6ZM21,20H3a1,1,0,0,0,0,2H21a1,1,0,0,0,0-2Z"></path></svg>                      
-                    </button>
-                </div>
+                <% if(url.includes('user')) { %>
+                    <div class="blog-button">
+                        <button class="btn" id="delete" data-blogid="<%= blog.id%>">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><path fill="#000" d="M15 3a1 1 0 0 1 1 1h2a1 1 0 1 1 0 2H6a1 1 0 0 1 0-2h2a1 1 0 0 1 1-1h6Z"></path><path fill="#000" fill-rule="evenodd" d="M6 7h12v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7Zm3.5 2a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 1 0v-9a.5.5 0 0 0-.5-.5Zm5 0a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 1 0v-9a.5.5 0 0 0-.5-.5Z" clip-rule="evenodd"></path></svg>
+                        </button>
+                        <button class="btn" id="edit" data-blogid="<%= blog.id%>">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5,18H9.24a1,1,0,0,0,.71-.29l6.92-6.93h0L19.71,8a1,1,0,0,0,0-1.42L15.47,2.29a1,1,0,0,0-1.42,0L11.23,5.12h0L4.29,12.05a1,1,0,0,0-.29.71V17A1,1,0,0,0,5,18ZM14.76,4.41l2.83,2.83L16.17,8.66,13.34,5.83ZM6,13.17l5.93-5.93,2.83,2.83L8.83,16H6ZM21,20H3a1,1,0,0,0,0,2H21a1,1,0,0,0,0-2Z"></path></svg>                      
+                        </button>
+                    </div>
+                <% } %>
             </div>
         </div>
-        <script>
-            const buttonContainer = document.querySelector('.blog-button');
-            buttonContainer.addEventListener('click', event => {
-                
-                let whichWork;
-                if(event.target.id === 'delete') {
-                    whichWork = 'delete';
-                } else if(event.target.id === 'edit') {
-                    whichWork = 'edit'
-                    location = '/blog/<%= blog.id %>/' + whichWork;
-                }
-
-                if(whichWork === 'delete') {
-                    let url =  '/blog/<%= blog.id %>/' + whichWork;
-                    fetch(url, {
-                        method: whichWork.toUpperCase()
-                    })
-                    .then(response =>  response.json())
-                    .then(data => {
-                        console.log(data);
-                        location = '/blog';
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-                }
-            });
-        </script>
+        <% if(url.includes('user')) { %>
+            <script src="http://localhost:3000/js/blog.js"></script>
+        <% } %>
     </body>
 </html>

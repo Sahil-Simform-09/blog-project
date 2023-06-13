@@ -1,5 +1,15 @@
 <%- include('layouts/layout') %>
-        <h1>Read all Blogs</h1>
+        <div class="profile">
+            <img src="<%= user.imgUrl %>" alt="">
+            <form action="/user/profile" method="POST" enctype="multipart/form-data" accept="image/*">
+                <label >Add Your Image</label>
+                <input id="file" type="file" name="profile-img">
+                <button type="submit">Upload image</button>
+            </form>
+            <h2><%= user.userName%></h2>
+            <p><%= user.email%></p>
+        </div>
+        <h2>Read Your all Blogs</h2>
         <div id="blog-container">
             <% blogs.forEach( blog => { %>
                 <div class="blog">
@@ -11,7 +21,7 @@
                         <% } else { %>
                             <p><%= blog.content %></p>
                         <% } %>
-                        <a href="/blog/<%= blog.id %>">Read more...</a>
+                        <a href="/user/blog/<%= blog.id %>">Read more...</a>
                     </div>
                 </div>
             <% }); %>
