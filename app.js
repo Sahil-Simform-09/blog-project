@@ -3,6 +3,7 @@ const ejs = require('ejs');
 const app = express();
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
+const cors = require('cors');
 
 // rquire all routes
 const homeRouter = require('./routes/home');
@@ -26,6 +27,9 @@ app.use(session({
 
 // ------ static files //
 app.use(express.static('public'));
+
+//------ cors middleware //
+app.use(cors());
 
 // ------ body parse middleware //
 app.use(express.json());
