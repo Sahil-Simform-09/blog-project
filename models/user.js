@@ -5,15 +5,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  userEmail: {
+  email: {
     type: String,
     required: true
   },
-  userPassword: {
+  password: {
     type: String,
     required: true
   },
-  userImg: {
+  imgUrl: {
     type: String
   },
   blogs: [{

@@ -1,12 +1,8 @@
 const fs = require('fs/promises');
 const path = require('path');
 const {getBlogById} = require('./user-controller');
-const mongoose = require('mongoose');
 const Blog = require('../../models/blog');
 
-const generateId = () => {
-    return Date.now();
-}
 const createNewBlog = () => {
     return {
         index(req, res) {
@@ -19,9 +15,9 @@ const createNewBlog = () => {
               
                 const blog = new Blog({
                     title,
-                    content,
                     author,
-                })
+                    content
+                });
                 await blog.save();
                  
             } catch(error) {
@@ -37,13 +33,10 @@ const updateBlogById = () => {
         async index(req, res, next) {            
             try {
                 const {blogId} = req.params;
-                const data = await fs.readFile('blog.json', 'utf8');
-                // Parse the JSON string into a JavaScript objectE
-                const blogsArray = JSON.parse(data).blogs;
                 
-                const index = blogsArray.findIndex( oneBlog => oneBlog.id === Number(blogId));
-                const blogToUpdate = blogsArray[index];
-                res.render('create', {whichWork: 'edit', blog: blogToUpdate});
+                const blog = Blog.findById(blogId);
+                console.log(blog);
+                res.render('create', {whichWork: 'edit', blog});
             } catch (error) {
                 const err = new Error(error);
                 err.httpStatusCode = 500;
