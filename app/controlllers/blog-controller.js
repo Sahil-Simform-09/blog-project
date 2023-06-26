@@ -1,6 +1,8 @@
 const fs = require('fs/promises');
 const path = require('path');
 const {getBlogById} = require('./user-controller');
+const mongoose = require('mongoose');
+const Blog = require('../../models/blog');
 
 const generateId = () => {
     return Date.now();
@@ -12,22 +14,16 @@ const createNewBlog = () => {
         },
         async create(req, res, next) {
             try {
-                const blog = req.body;
-                const data = await fs.readFile('blog.json', 'utf-8');
-                const blogsArray = JSON.parse(data).blogs;
-
-                blog.id = generateId();
-                blog.author = req.session.user.userName;
-                // Modify the specific property
-                blogsArray.push(blog);
-        
-                // Convert the JavaScript object back to a JSON string
-                const jsonString = '{"blogs":' + JSON.stringify(blogsArray) +'}';
-        
-                // Write the JSON string back to the file
-                await fs.writeFile('blog.json', jsonString, 'utf8');
-        
-                return res.redirect('/user/profile');
+                const {title, content} = req.body;
+                const author = req.session.user.userName;
+              
+                const blog = new Blog({
+                    title,
+                    content,
+                    author,
+                })
+                await blog.save();
+                 
             } catch(error) {
                 const err = new Error(error);
                 err.httpStatusCode = 500;

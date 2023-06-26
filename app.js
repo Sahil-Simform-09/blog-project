@@ -2,8 +2,9 @@ require('dotenv').config();
 const express  = require('express');
 const app = express();
 const session = require('express-session');
-const FileStore = require('session-file-store')(session);
 const helmet = require('helmet');
+const mongoose = require('mongoose');
+const MongoStore = require('connect-mongodb-session')(session);
 
 // rquire all routes
 const homeRouter = require('./routes/home');
@@ -18,10 +19,20 @@ const helper = require('./app/midlewares/helper');
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
 
+// mongodb connection
+mongoose.connect(process.env.MONGO_URL)
+    .then(() => console.log('Database connected!!!'))
+    .catch( err => {
+        throw new Error(err);
+    });
+
 // ------------------------------ middlewares ------------------------------ //
 //------ Use the session middleware //
 app.use(session({ 
-    store: new FileStore,
+    store: new MongoStore({
+        uri: process.env.MONGO_URL,
+        expiresAfterSeconds: 60 * 1000 * 60,
+    }),
     secret: process.env.COOKIE_SECRET, 
     resave: false,
     saveUninitialized: false,
@@ -49,8 +60,8 @@ app.use((req, res, next) => {
     const error = new Error('Page not found');
     error.httpStatusCode = 404;
     throw error;
-})
+});
 
 // ------ error handler middleware //
 app.use(helper);
-app.listen(3000, () => console.log('server is listing on port 3000'));
+app.listen(process.env.PORT, () => console.log('server is listing on port 3000'));

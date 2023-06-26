@@ -39,22 +39,22 @@ const getBlogById = async (req, res, next) => {
 }
 const handleUserProfileImage = async (req, res, next) => {
     try {
-        const data = await fs.readFile('user.json', 'utf-8');
-        const usersArray = JSON.parse(data).users;
-                
-        const index = usersArray.findIndex( user => user.email === req.session.user.email);
-        const user = usersArray[index];
-        user.imgUrl = '/uploads/' + req.file.filename;
+	    const data = await fs.readFile('user.json', 'utf-8');
+		const usersArray = JSON.parse(data).users;
 
-        usersArray.splice(index, 1, user);
-        const jsonString = '{"users":' + JSON.stringify(usersArray) +'}';
-        
-        req.session.user.imgUrl = '/uploads/' + req.file.filename;
+		const index = usersArray.findIndex( user => user.email === req.session.user.email);
+		const user = usersArray[index];
+		user.imgUrl = `/uploads/${req.file.filename}`;
 
-        await fs.writeFile('user.json', jsonString, 'utf8');
+		usersArray.splice(index, 1, user);
+		const jsonString = '{"users":' + JSON.stringify(usersArray) +'}';
 
-        return res.redirect('/user/profile');
-    } catch (error) {
+		req.session.user.imgUrl = '/uploads/' + req.file.filename;
+
+		await fs.writeFile('user.json', jsonString, 'utf8');
+
+		return res.redirect('/user/profile');
+	} catch (error) {
         const err = new Error(error); 
         err.httpStatusCode = 500;
         next(err);

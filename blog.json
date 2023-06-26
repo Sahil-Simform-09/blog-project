@@ -1,5 +1,1 @@
-{
-    "blogs": [
-
-    ]
-}
+{"blogs":[{"title":"Nodejs","content":"Step 3: Once we have established a connection to our database and required all the necessary packages, we can now begin defining our server-side logic. So for storing an image in MongoDB, we need to create a schema with mongoose. For that create the file `model.js` file and define the schema. The important point here is that our data type for the image is a Buffer which allows us to store our image as data in the form of arrays.","id":1687778837284,"author":"sahil"},{"title":"Js","content":"ergrtg","id":1687778897262,"author":"sahil"}]}
