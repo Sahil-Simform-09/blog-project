@@ -15,11 +15,7 @@ const userSchema = new mongoose.Schema({
   },
   imgUrl: {
     type: String
-  },
-  blogs: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Blog"
-  }]
+  }
 }, {timestamps: true});
 
 module.exports = mongoose.model('User', userSchema);

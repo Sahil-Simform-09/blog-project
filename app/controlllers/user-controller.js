@@ -1,12 +1,14 @@
 const fs = require('fs/promises');
+const mongoose = require('mongoose');
+const Blog = require('../../models/blog.js');
 
 const handleUserProfile = async (req, res, next) => { 
     try {
-        const blogs = await fs.readFile('blog.json', 'utf-8');
-        const blogsArray = JSON.parse(blogs.toString()).blogs;
-        const LoggedInUserBlogsArray = blogsArray.filter( blog => blog.author === req.session.user.userName );
+        const blogs = await Blog.find({
+            userId: req.session.user.id
+        });
         res.render('profile', {
-            blogs: LoggedInUserBlogsArray,
+            blogs,
             user: req.session.user,
         });
 
@@ -20,17 +22,14 @@ const handleUserProfile = async (req, res, next) => {
 const getBlogById = async (req, res, next) => {
     try {
         const {blogId} = req.params;
-        const blogs = await fs.readFile('blog.json', 'utf-8');
-        const blogObject = JSON.parse(blogs).blogs;
-        const index = blogObject.findIndex( blog => blog.id === Number(blogId));
-            
-        if(index !== -1) {
-            res.render('blog', {blog: blogObject[index], url: req.originalUrl});
-        } else {
-            err = new Error(`blog with id ${blogId} does not exist`);
-            err.httpStatusCode = 404;
-            next(err)
-        }    
+        const blogObjectId = new mongoose.Types.ObjectId(blogId);
+        const blog = await Blog.findById(blogObjectId);
+        if(!blog) {
+            err = new Error(`blog with id ${blogObjectId} does not exist`);
+            err.httpStatusCode = 500;
+            return next(err);
+        }   
+        return res.render('blog', {blog, url: req.originalUrl});
     } catch (error) {
         const err = new Error(error);
         err.httpStatusCode = 500;

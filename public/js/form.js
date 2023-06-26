@@ -25,7 +25,7 @@ document.querySelector('form').addEventListener('submit', event => {
     .then(response =>  response.json())
     .then(data => {
         console.log(data);
-        location = '/blog';
+        location = 'http://localhost:3000/user/profile';
     })
     .catch(error => {
         console.log(error);

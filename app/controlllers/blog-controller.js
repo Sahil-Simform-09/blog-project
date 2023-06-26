@@ -2,6 +2,7 @@ const fs = require('fs/promises');
 const path = require('path');
 const {getBlogById} = require('./user-controller');
 const Blog = require('../../models/blog');
+const { default: mongoose } = require('mongoose');
 
 const createNewBlog = () => {
     return {
@@ -11,15 +12,15 @@ const createNewBlog = () => {
         async create(req, res, next) {
             try {
                 const {title, content} = req.body;
-                const author = req.session.user.userName;
+                const userId = req.session.user.id;
               
                 const blog = new Blog({
                     title,
-                    author,
+                    userId,
                     content
-                });
+                })
                 await blog.save();
-                 
+                return res.redirect('/user/profile');
             } catch(error) {
                 const err = new Error(error);
                 err.httpStatusCode = 500;
@@ -33,10 +34,15 @@ const updateBlogById = () => {
         async index(req, res, next) {            
             try {
                 const {blogId} = req.params;
+                const blogObjectId = new mongoose.Types.ObjectId(blogId);
+                const blog = await Blog.findById(blogObjectId);
                 
-                const blog = Blog.findById(blogId);
-                console.log(blog);
-                res.render('create', {whichWork: 'edit', blog});
+                if(!blog) {
+                    err = new Error(`blog with id ${blogObjectId} does not exist`);
+                    err.httpStatusCode = 500;
+                    return next(err);
+                }   
+                return res.render('create', {whichWork: 'edit', blog});
             } catch (error) {
                 const err = new Error(error);
                 err.httpStatusCode = 500;
@@ -46,25 +52,15 @@ const updateBlogById = () => {
         async update(req, res, next) {
             try {
                 const blog = req.body;
-                const data = await fs.readFile('blog.json', 'utf8');
-            
-                // Parse the JSON string into a JavaScript objectE
-                const blogsArray = JSON.parse(data).blogs;
-                    
-                const index = blogsArray.findIndex( oneBlog => oneBlog.id === Number(blog.id));
-                    
-                // Modify the specific property
-                const blogToUpdate = blogsArray[index];
-                blogToUpdate.title = blog.title;
-                blogToUpdate.content = blog.content;
-            
-                blogsArray.splice(index, 1, blogToUpdate);
-                    // Convert the JavaScript object back to a JSON string
-                const jsonString = '{"blogs":' + JSON.stringify(blogsArray) +'}';
-                
-                // Write the JSON string back to the file
-                await fs.writeFile('blog.json', jsonString, 'utf8');
-                return res.redirect('/user/profile', {"message": "Data updated successfully.", "status": "ok"});
+
+                const {blogId} = req.params;
+                const blogObjectId = new mongoose.Types.ObjectId(blogId);
+
+                const updatedBlog = await Blog.findByIdAndUpdate(blogObjectId, {
+                    title: blog.title,
+                    content: blog.content
+                });
+                return res.json({"message": "Data updated successfully.", "status": "ok"});
             } catch (error) {
                 const err = new Error(error);
                 err.httpStatusCode = 500;
@@ -76,17 +72,12 @@ const updateBlogById = () => {
 const deleteBlogById = async (req, res, next) => {
     try {
         const {blogId} = req.params;
-        const data = await fs.readFile('blog.json', 'utf8');
-
-        const blogsArray = JSON.parse(data).blogs;
-        const index = blogsArray.findIndex( blog => blog.id === Number(blogId));
-            
-        blogsArray.splice(index, 1);
-        // Convert the JavaScript object back to a JSON string
-        const jsonString = '{"blogs":' + JSON.stringify(blogsArray) + '}'; 
-            
-        await fs.writeFile('blog.json', jsonString, 'utf8');                
-        return res.redirect('/user/profile' ,{"message": "Data Deleted successfully.", "status": "ok"});     
+        const blogObjectId = new mongoose.Types.ObjectId(blogId);
+        const blog = await Blog.deleteOne({
+            _id: blogObjectId
+        });
+              
+        return res.json({"message": "Data Deleted successfully.", "status": "ok"});     
     } catch (error) {
         const err = new Error(error);
         err.httpStatusCode = 500;
@@ -95,7 +86,7 @@ const deleteBlogById = async (req, res, next) => {
 }
 const getAllBlog = async (req, res, next) => {
     try {
-        const blogs = await fs.readFile('blog.json', 'utf-8');
+        const blogs = await Blog.find();
         res.render('blogs', {blogs: JSON.parse(blogs.toString()).blogs});
     } catch (error) {
         const err = new Error(error);
