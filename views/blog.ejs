@@ -4,7 +4,7 @@
             <div class="blog">
                 <div class="blog-text">
                     <h2><%= blog.title %></h2>
-                    <h4><%= blog.author %></h4>
+                    <h4><%= blog.user.userName %></h4>
                     <p><%= blog.content %></p>
                 </div>
                 <% if(url.includes('user')) { %>

@@ -31,12 +31,12 @@ mongoose.connect(process.env.MONGO_URL)
 app.use(session({ 
     store: new MongoStore({
         uri: process.env.MONGO_URL,
-        expiresAfterSeconds: 60 * 1000 * 60,
+        expiresAfterSeconds: 60 * 60 * 24,
     }),
     secret: process.env.COOKIE_SECRET, 
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 60 * 1000 * 60 }
+    cookie: { maxAge: 60 * 1000 * 60 * 24}
 })); 
 
 // ------ secuirity middleware //

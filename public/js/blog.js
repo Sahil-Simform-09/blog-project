@@ -7,7 +7,6 @@ buttonContainer.addEventListener('click', event => {
         whichWork = 'delete';
     } else if(event.target.id === 'edit') {
         whichWork = 'edit';
-        console.log(`http://localhost:3000/blog/${blogId}/${whichWork}`);
         location = `http://localhost:3000/blog/${blogId}/${whichWork}`;
     }
 
@@ -18,7 +17,7 @@ buttonContainer.addEventListener('click', event => {
         })
         .then(response =>  response.json())
         .then(data => {
-            location = '/user/profile';
+            location = 'http://localhost:3000/user/profile';
         })
         .catch(error => {
             console.log(error);

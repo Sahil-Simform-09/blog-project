@@ -2,7 +2,7 @@ const fs = require('fs/promises');
 const path = require('path');
 const {getBlogById} = require('./user-controller');
 const Blog = require('../../models/blog');
-const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 
 const createNewBlog = () => {
     return {
@@ -13,10 +13,11 @@ const createNewBlog = () => {
             try {
                 const {title, content} = req.body;
                 const userId = req.session.user.id;
+                const userName = req.session.user.userName;
               
                 const blog = new Blog({
                     title,
-                    userId,
+                    user: userId,
                     content
                 })
                 await blog.save();
@@ -39,7 +40,7 @@ const updateBlogById = () => {
                 
                 if(!blog) {
                     err = new Error(`blog with id ${blogObjectId} does not exist`);
-                    err.httpStatusCode = 500;
+                    err.httpStatusCode = 404;
                     return next(err);
                 }   
                 return res.render('create', {whichWork: 'edit', blog});
@@ -73,7 +74,7 @@ const deleteBlogById = async (req, res, next) => {
     try {
         const {blogId} = req.params;
         const blogObjectId = new mongoose.Types.ObjectId(blogId);
-        const blog = await Blog.deleteOne({
+        await Blog.deleteOne({
             _id: blogObjectId
         });
               
@@ -87,7 +88,7 @@ const deleteBlogById = async (req, res, next) => {
 const getAllBlog = async (req, res, next) => {
     try {
         const blogs = await Blog.find();
-        res.render('blogs', {blogs: JSON.parse(blogs.toString()).blogs});
+        res.render('blogs', {blogs});
     } catch (error) {
         const err = new Error(error);
         err.httpStatusCode = 500;

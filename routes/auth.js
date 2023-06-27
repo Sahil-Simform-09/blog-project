@@ -4,6 +4,7 @@ const auth = require('../app/midlewares/auth');
 const {body} = require('express-validator');
 const fs = require('fs/promises');
 const {handleLogin, handleSignUp, handleLogout} = require('../app/controlllers/auth-controller');
+const User = require('../models/user');
 
 router.get('/login', auth, handleLogin().index);
 router.post(
@@ -13,16 +14,14 @@ router.post(
     ], handleLogin().postLogin);
 router.get('/logout', handleLogout);
 
-router.get('/signUp', handleSignUp().index);
+router.get('/signUp', auth, handleSignUp().index);
 router.post(
     '/signUp', [
         body('email')
         .notEmpty().withMessage('Email is required')
         .custom( async (email, {}) => {
-            const data = await fs.readFile('user.json', 'utf8');
-            const usersArray = JSON.parse(data).users;
-            const index = usersArray.findIndex(user => user.email === email);
-            if (index !== -1) {
+            const user = await User.find({email});
+            if (!user) {
                 return Promise.reject('User allready exist with this email');
             }
         })
