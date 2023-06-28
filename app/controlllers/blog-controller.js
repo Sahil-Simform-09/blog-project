@@ -3,6 +3,8 @@ const path = require('path');
 const Blog = require('../../models/blog');
 const User = require('../../models/user');
 
+const TOTAL_BLOGS_PER_PAGE = 1;
+
 const mongoose = require('mongoose');
 const user = require('../../models/user');
 
@@ -101,8 +103,24 @@ const deleteBlogById = async (req, res, next) => {
 }
 const getAllBlog = async (req, res, next) => {
     try {
-        const blogs = await Blog.find().populate('user');
-        res.render('blogs', {blogs});
+        const pageNumber = Number(req.query.page) || 1;
+
+        const numberOfBlogs = await Blog.find().countDocuments();
+        const blogs = await Blog.find()
+                                .skip((pageNumber - 1) * TOTAL_BLOGS_PER_PAGE)
+                                .limit(TOTAL_BLOGS_PER_PAGE)
+                                .populate('user');
+
+        res.render('blogs', {
+            blogs,
+            numberOfBlogs,
+            hasNextPage: pageNumber*TOTAL_BLOGS_PER_PAGE < numberOfBlogs,
+            hasPrevPage: pageNumber > 1,
+            currentPage: pageNumber,
+            nextPage: pageNumber + 1,
+            prevPage: pageNumber - 1,
+            lastPage: Math.ceil(numberOfBlogs / TOTAL_BLOGS_PER_PAGE)
+        });
     } catch (error) {
         const err = new Error(error);
         err.httpStatusCode = 500;
@@ -113,7 +131,7 @@ const getBlogById = async (req, res, next) => {
     try {
         const {blogId} = req.params;
         const blogObjectId = new mongoose.Types.ObjectId(blogId);
-        const blog = await Blog.findById(blogObjectId);
+        const blog = await Blog.findById(blogObjectId).populate('user');
         if(!blog) {
             err = new Error(`blog with id ${blogObjectId} does not exist`);
             err.httpStatusCode = 404;

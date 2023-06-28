@@ -1,5 +1,10 @@
 <%- include('layouts/layout') %>
-        <h1>Read all Blogs</h1>
+        <%if(numberOfBlogs > 0) { %>
+            <h1>Read all Blogs</h1>
+        <% } else { %>
+            <h1>oops No blogs here :(</h1>
+            <h2>Please wait to create blogs by creator</h2>
+        <% } %>
         <div id="blog-container">
             <% blogs.forEach( blog => { %>
                 <div class="blog">
@@ -15,6 +20,21 @@
                     </div>
                 </div>
             <% }); %>
-        </div> 
+        </div>
+        <section class="pagination">
+            <%  if(currentPage !== 1) { %>
+                <a href="/blog/?page=1">1</a>
+            <% } %> 
+            <%  if(hasPrevPage && prevPage !== 1) { %>
+                <a href="/blog/?page=<%= prevPage %>"><%= prevPage %></a>
+            <% } %> 
+                <a href="/blog/?page=<%= currentPage %>" class="current-page"><%= currentPage %></a>
+            <%  if(hasNextPage && nextPage !== lastPage) { %>
+                <a href="/blog/?page=<%= nextPage %>"><%= nextPage %></a>
+            <% } %> 
+            <%  if(currentPage < lastPage) { %>
+                <a href="/blog/?page=<%= lastPage %>"><%= lastPage %></a>
+            <% } %> 
+        </section>
     </body>
 </html>

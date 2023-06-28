@@ -68,11 +68,16 @@ li a:hover {
 }
 .blog h2 {
     font-size: 24px;
+    padding: 6px 0;
     color: #333;
 }
 .blog p {
+    padding: 6px 0;
     font-size: 16px;
     color: #666;
+}
+.blog a {
+  padding: 6px 0;
 }
 /* CSS for form container */
 form {
@@ -189,4 +194,24 @@ input[type="submit"]:hover {
   margin: auto;
   padding: 10px;
   margin-top: 50px;
+}
+
+.pagination {
+  display: inline-block;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  margin: 3px;
+}
+.pagination a:hover {
+  background-color: #f2f2f2;
+}
+.current-page {
+  background-color: #f2f2f2;
 }
