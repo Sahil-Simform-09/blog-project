@@ -5,6 +5,7 @@ const path = require('path');
 
 const {handleUserProfile, getBlogById, handleUserProfileImage} = require('../app/controlllers/user-controller');
 const guest = require('../app/midlewares/guest');
+const edit = require('../app/midlewares/edit');
 
 // set storage engine
 const storage = multer.diskStorage({   
@@ -16,12 +17,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage: storage});
 
-router.get('/profile', guest, handleUserProfile );
+// add profile image
+router.get('/profile', handleUserProfile );
 router.post('/profile', upload.single('profile-img') ,handleUserProfileImage);
 
 // get particular blogs by id
 router.get('/blog/:blogId', getBlogById);
-
-// add profile image
 
 module.exports = router;

@@ -1,6 +1,5 @@
 const fs = require('fs/promises');
 const path = require('path');
-const {getBlogById} = require('./user-controller');
 const Blog = require('../../models/blog');
 const User = require('../../models/user');
 
@@ -81,8 +80,8 @@ const updateBlogById = () => {
 const deleteBlogById = async (req, res, next) => {
     try {
         const {blogId} = req.params;
-        const userId = req.session.user.id;
         const blogObjectId = new mongoose.Types.ObjectId(blogId);
+        const userId = req.session.userId;
 
         await Blog.deleteOne({ // delete blog from blog collection
             _id: blogObjectId
@@ -97,7 +96,7 @@ const deleteBlogById = async (req, res, next) => {
     } catch (error) {
         const err = new Error(error);
         err.httpStatusCode = 500;
-        next(err);
+        return next(err);
     }
 }
 const getAllBlog = async (req, res, next) => {
@@ -109,5 +108,22 @@ const getAllBlog = async (req, res, next) => {
         err.httpStatusCode = 500;
         next(err);
     }
+}
+const getBlogById = async (req, res, next) => {
+    try {
+        const {blogId} = req.params;
+        const blogObjectId = new mongoose.Types.ObjectId(blogId);
+        const blog = await Blog.findById(blogObjectId);
+        if(!blog) {
+            err = new Error(`blog with id ${blogObjectId} does not exist`);
+            err.httpStatusCode = 404;
+            return next(err);
+        }   
+        return res.render('blog', {blog, userId: ''});
+    } catch (error) {
+	    const err = new Error(error);
+		error.name === "BSONError" ? err.httpStatusCode = 404 : err.httpStatusCode = 500;
+		next(err);
+	}
 }
 module.exports = {getAllBlog, getBlogById, deleteBlogById, updateBlogById, createNewBlog};

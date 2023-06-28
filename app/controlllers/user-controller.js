@@ -28,7 +28,7 @@ const getBlogById = async (req, res, next) => {
             err.httpStatusCode = 404;
             return next(err);
         }   
-        return res.render('blog', {blog, url: req.originalUrl});
+        return res.render('blog', {blog, userId: req.session.userId.toString()});
     } catch (error) {
 	    const err = new Error(error);
 		error.name === "BSONError" ? err.httpStatusCode = 404 : err.httpStatusCode = 500;
@@ -41,10 +41,7 @@ const handleUserProfileImage = async (req, res, next) => {
 	    const user = await User.findByIdAndUpdate(userId, {
             imgUrl: `/uploads/${req.file.filename}`
         });
-		return res.render('profile', {
-            user: {userName: user.userName, email: user.email, imgUrl: user.imgUrl},
-            blogs: user.blogs
-        });
+		return res.redirect('/user/profile');
 	} catch (error) {
         const err = new Error(error); 
         err.httpStatusCode = 500;
