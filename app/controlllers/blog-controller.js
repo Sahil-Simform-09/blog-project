@@ -146,23 +146,45 @@ const getBlogById = async (req, res, next) => {
 	}
 }
 const likeBlog = async (req, res, next) => {
-    const {userId, blogId} = req.body;
+    const {userId} = req.body;
+    const blogId = req.params.blogId;
 
     const blogObjectId = new mongoose.Types.ObjectId(blogId);
     const userObjectId = new mongoose.Types.ObjectId(userId);
     try {
-        await Blog.findByIdAndUpdate(blogObjectId, {
+        const blog = await Blog.findByIdAndUpdate(blogObjectId, {
             $addToSet: {
                 likes: userObjectId
             }
         });
-        return res
-            . status(200)
-            .json({message: "liked!!"});
+        const totalLikes = blog.likes.length;
+        return res.json({blog, totalLikes});
     } catch(error) {
         const err = new Error(error);
         err.httpStatusCode = 500;
         next(err);
     }
 }
-module.exports = {getAllBlog, getBlogById, deleteBlogById, updateBlogById, createNewBlog, likeBlog};
+const commentBlog = async (req, res, next) => {
+    const {userId, comment} = req.body;
+    const blogId = req.params.blogId;
+
+    const blogObjectId = new mongoose.Types.ObjectId(blogId);
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    try {
+        const blog = await Blog.findByIdAndUpdate(blogObjectId, {
+            $push: {
+                comments: {
+                    userId: userObjectId,
+                    comment
+                }
+            }
+        });
+        return res.json({blog});
+    } catch(error) {
+        const err = new Error(error);
+        err.httpStatusCode = 500;
+        next(err);
+    }
+}
+module.exports = {getAllBlog, getBlogById, deleteBlogById, updateBlogById, createNewBlog, likeBlog, commentBlog};

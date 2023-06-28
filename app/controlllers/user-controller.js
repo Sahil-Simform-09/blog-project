@@ -48,4 +48,5 @@ const handleUserProfileImage = async (req, res, next) => {
         next(err);
     }   
 }
+
 module.exports = {handleUserProfile, getBlogById, handleUserProfileImage};
