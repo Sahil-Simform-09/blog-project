@@ -5,15 +5,12 @@ const User = require('../../models/user.js');
 
 const handleUserProfile = async (req, res, next) => { 
     try {
-        const blogs = await Blog.find({
-            "user": req.session.user.id
-        }).populate('user');
+        const user = await User.findById(req.session.userId).populate('blogs');
 
         res.render('profile', {
-    
+            user: {userName: user.userName, email: user.email, imgUrl: user.imgUrl},
+            blogs: user.blogs
         });
-        console.log(blogs);
-
     } catch (error) {
         const err = new Error(error);
         err.httpStatusCode = 500;
@@ -40,11 +37,14 @@ const getBlogById = async (req, res, next) => {
 }
 const handleUserProfileImage = async (req, res, next) => {
     try {
-        const userId = req.session.user.id;
+        const userId = req.session.userId;
 	    const user = await User.findByIdAndUpdate(userId, {
-            userName: `/uploads/${req.file.filename}`
+            imgUrl: `/uploads/${req.file.filename}`
         });
-		return res.render('profile', {imgUrl: user.imgUrl});
+		return res.render('profile', {
+            user: {userName: user.userName, email: user.email, imgUrl: user.imgUrl},
+            blogs: user.blogs
+        });
 	} catch (error) {
         const err = new Error(error); 
         err.httpStatusCode = 500;

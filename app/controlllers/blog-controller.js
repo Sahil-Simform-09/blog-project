@@ -2,7 +2,10 @@ const fs = require('fs/promises');
 const path = require('path');
 const {getBlogById} = require('./user-controller');
 const Blog = require('../../models/blog');
+const User = require('../../models/user');
+
 const mongoose = require('mongoose');
+const user = require('../../models/user');
 
 const createNewBlog = () => {
     return {
@@ -12,15 +15,20 @@ const createNewBlog = () => {
         async create(req, res, next) {
             try {
                 const {title, content} = req.body;
-                const userId = req.session.user.id;
-                const userName = req.session.user.userName;
+                const userId = req.session.userId;
               
-                const blog = new Blog({
+                const blog = new Blog({ // create new blog
                     title,
                     user: userId,
                     content
                 })
                 await blog.save();
+
+                await User.findByIdAndUpdate(userId, { // add blogId in user collection
+                    $push: {
+                        blogs: blog.id
+                    }
+                });
                 return res.redirect('/user/profile');
             } catch(error) {
                 const err = new Error(error);
@@ -73,11 +81,18 @@ const updateBlogById = () => {
 const deleteBlogById = async (req, res, next) => {
     try {
         const {blogId} = req.params;
+        const userId = req.session.user.id;
         const blogObjectId = new mongoose.Types.ObjectId(blogId);
-        await Blog.deleteOne({
+
+        await Blog.deleteOne({ // delete blog from blog collection
             _id: blogObjectId
         });
-              
+        
+        await User.findByIdAndUpdate(userId, {
+            $pull: {
+                blogs: blogId
+            }
+        });
         return res.json({"message": "Data Deleted successfully.", "status": "ok"});     
     } catch (error) {
         const err = new Error(error);
@@ -87,7 +102,7 @@ const deleteBlogById = async (req, res, next) => {
 }
 const getAllBlog = async (req, res, next) => {
     try {
-        const blogs = await Blog.find();
+        const blogs = await Blog.find().populate('user');
         res.render('blogs', {blogs});
     } catch (error) {
         const err = new Error(error);

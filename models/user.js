@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  blogs: [{
+    type: mongoose.Types.ObjectId,
+    ref: "Blog"
+  }],
   imgUrl: {
     type: String
   }
