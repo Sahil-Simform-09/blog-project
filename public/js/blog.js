@@ -18,8 +18,9 @@ buttonContainer.addEventListener('click', event => {
         fetch(url, {
             method: whichWork.toUpperCase()
         })
-        .then((data) => {
-            location = 'http://localhost:3000/user/profile';
+        .then(response =>  response.json())
+        .then(data => {
+            location = 'http://localhost:3000' = data.redirectUrl;
         })
         .catch(error => {
             console.log(error);

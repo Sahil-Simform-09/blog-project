@@ -14,7 +14,6 @@ document.querySelector('form').addEventListener('submit', event => {
         id: Number(location.pathname.substring(6, location.pathname.length - 5))
     }
                         
-    console.log(location.pathname);
     fetch(location.pathname, {
         method: 'PATCH',
         headers: {
@@ -24,8 +23,7 @@ document.querySelector('form').addEventListener('submit', event => {
     })
     .then(response =>  response.json())
     .then(data => {
-        console.log(data);
-        location = 'http://localhost:3000/user/profile';
+        location = 'http://localhost:3000' = data.redirectUrl;
     })
     .catch(error => {
         console.log(error);

@@ -70,7 +70,7 @@ const updateBlogById = () => {
                     title: blog.title,
                     content: blog.content
                 });
-                return res.json({"message": "Data updated successfully.", "status": "ok"});
+                return res.json({message: 'Data Deleted successfully.', status: 'ok', redirectUrl: '/user/profile'});
             } catch (error) {
                 const err = new Error(error);
                 err.httpStatusCode = 500;
@@ -94,7 +94,7 @@ const deleteBlogById = async (req, res, next) => {
                 blogs: blogId
             }
         });
-        return res.json({"message": "Data Deleted successfully.", "status": "ok"});     
+        return res.json({message: 'Data Deleted successfully.', status: 'ok', redirectUrl: '/user/profile'});     
     } catch (error) {
         const err = new Error(error);
         err.httpStatusCode = 500;
@@ -111,7 +111,7 @@ const getAllBlog = async (req, res, next) => {
                                 .limit(TOTAL_BLOGS_PER_PAGE)
                                 .populate('user');
 
-        res.render('blogs', {
+        return res.render('blogs', {
             blogs,
             numberOfBlogs,
             hasNextPage: pageNumber*TOTAL_BLOGS_PER_PAGE < numberOfBlogs,
