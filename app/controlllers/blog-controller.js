@@ -2,6 +2,7 @@ const fs = require('fs/promises');
 const path = require('path');
 const Blog = require('../../models/blog');
 const User = require('../../models/user');
+const ReadList = require('../../models/readlist');
 
 const TOTAL_BLOGS_PER_PAGE = 1;
 
@@ -144,4 +145,24 @@ const getBlogById = async (req, res, next) => {
 		next(err);
 	}
 }
-module.exports = {getAllBlog, getBlogById, deleteBlogById, updateBlogById, createNewBlog};
+const likeBlog = async (req, res, next) => {
+    const {userId, blogId} = req.body;
+
+    const blogObjectId = new mongoose.Types.ObjectId(blogId);
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    try {
+        await Blog.findByIdAndUpdate(blogObjectId, {
+            $addToSet: {
+                likes: userObjectId
+            }
+        });
+        return res
+            . status(200)
+            .json({message: "liked!!"});
+    } catch(error) {
+        const err = new Error(error);
+        err.httpStatusCode = 500;
+        next(err);
+    }
+}
+module.exports = {getAllBlog, getBlogById, deleteBlogById, updateBlogById, createNewBlog, likeBlog};

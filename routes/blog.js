@@ -3,7 +3,7 @@ const router = express.Router();
 const guest = require('../app/midlewares/guest');
 const edit = require('../app/midlewares/edit');
 
-const {getAllBlog, getBlogById, createNewBlog, updateBlogById, deleteBlogById} = require('../app/controlllers/blog-controller');
+const {getAllBlog, getBlogById, createNewBlog, updateBlogById, deleteBlogById, likeBlog} = require('../app/controlllers/blog-controller');
 // get all blogs
 router.get('/', getAllBlog);
 
@@ -20,4 +20,7 @@ router.patch('/:blogId/edit/:userId', edit, updateBlogById().update);
 
 // delete a new blog
 router.delete('/:blogId/delete/:userId', edit, deleteBlogById);
+
+// add like
+router.post('/:blogId/like', likeBlog);
 module.exports = router;
