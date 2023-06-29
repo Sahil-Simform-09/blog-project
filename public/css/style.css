@@ -232,3 +232,30 @@ input[type="submit"]:hover {
 .current-page {
   background-color: #f2f2f2;
 }
+.search-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.search-container input[type="text"] {
+  width: 300px;
+  padding: 10px;
+  border: none;
+  background-color: #f2f2f2;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.search-container button[type="submit"] {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.search-container button[type="submit"]:hover {
+  background-color: #45a049;
+}

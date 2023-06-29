@@ -1,4 +1,10 @@
 <%- include('layouts/layout') %>
+        <div class="search-container">
+            <form action="/blog/search" method="POST">
+                <input type="text" placeholder="Search Blogs" name="query">
+                <button type="submit">Search</button>
+            </form>
+        </div>
         <%if(numberOfBlogs > 0) { %>
             <h1>Read all Blogs</h1>
         <% } else { %>

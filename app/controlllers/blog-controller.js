@@ -4,7 +4,7 @@ const Blog = require('../../models/blog');
 const User = require('../../models/user');
 const ReadList = require('../../models/readlist');
 
-const TOTAL_BLOGS_PER_PAGE = 1;
+const TOTAL_BLOGS_PER_PAGE = 3;
 
 const mongoose = require('mongoose');
 const user = require('../../models/user');
@@ -129,6 +129,37 @@ const getAllBlog = async (req, res, next) => {
         next(err);
     }
 }
+const getSearchBlogs = async (req, res, next) => {
+    const {query} = req.body;
+    
+    const pageNumber = Number(req.query.page) || 1;
+    const blogs = await Blog.find({
+        $text: {
+            $search: query
+        }
+    }, {
+        score: {
+            $meta: 'textScore'
+        }
+    }).sort({
+        score: {
+            $meta: 'textScore'
+        }}
+    );
+    const numberOfBlogs = blogs.length;
+
+    return res.render('blogs', {
+        status: 200,
+        blogs,
+        numberOfBlogs,
+        hasNextPage: pageNumber*TOTAL_BLOGS_PER_PAGE < numberOfBlogs,
+        hasPrevPage: pageNumber > 1,
+        currentPage: pageNumber,
+        nextPage: pageNumber + 1,
+        prevPage: pageNumber - 1,
+        lastPage: Math.ceil(numberOfBlogs / TOTAL_BLOGS_PER_PAGE)
+    });
+}
 const getBlogById = async (req, res, next) => {
     try {
         const {blogId} = req.params;
@@ -218,4 +249,5 @@ const commentBlog = async (req, res, next) => {
         next(err);
     }
 }
-module.exports = {getAllBlog, getBlogById, deleteBlogById, updateBlogById, createNewBlog, likeBlog, commentBlog};
+module.exports = {getAllBlog, getBlogById, deleteBlogById, updateBlogById, createNewBlog, likeBlog, commentBlog, getSearchBlogs};
+
