@@ -1,7 +1,6 @@
 const makeReuest = async (body, WhichRequest) => {
     const url = location.pathname;
     const blogId = url.substring(url.lastIndexOf('/') + 1);
-
     const response = await fetch(`http://localhost:3000/blog/${blogId}/${WhichRequest}`, {
         method: 'post', 
         headers: {
@@ -9,6 +8,8 @@ const makeReuest = async (body, WhichRequest) => {
         },
         body: JSON.stringify(body)
     });
+
+    console.log(blogId);
     const responseObj = await response.json();
     const responseUrl = responseObj.redirectUrl;
     const redirectUrl = responseUrl.substring(0, responseUrl.lastIndexOf('/'));
@@ -35,7 +36,7 @@ commentBtn.addEventListener('click', async event => {
 });
 
 // add like
-const likeBtn = document.querySelector('.like-div .like');
+const likeBtn = document.querySelector('.like');
 likeBtn.addEventListener('click', async event => {
     event.preventDefault();
     

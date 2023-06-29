@@ -159,6 +159,10 @@ const likeBlog = async (req, res, next) => {
 
     const blogObjectId = new mongoose.Types.ObjectId(blogId);
     const userObjectId = new mongoose.Types.ObjectId(userId);
+
+    console.log(blogObjectId);
+    console.log(userObjectId);
+
     try {
         const blog = await Blog.findByIdAndUpdate(blogObjectId, {
             $addToSet: {
@@ -167,7 +171,7 @@ const likeBlog = async (req, res, next) => {
         }, {
             new: true
         });
-        return res.json('blog', {
+        return res.json({
             blog,
             userId: req.session.userId,
             isCreator: blog.user === req.session.userId,
