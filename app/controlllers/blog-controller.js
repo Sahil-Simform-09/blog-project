@@ -1,13 +1,8 @@
-const fs = require('fs/promises');
-const path = require('path');
 const Blog = require('../../models/blog');
 const User = require('../../models/user');
-const ReadList = require('../../models/readlist');
+const mongoose = require('mongoose');
 
 const TOTAL_BLOGS_PER_PAGE = 3;
-
-const mongoose = require('mongoose');
-const user = require('../../models/user');
 
 const createNewBlog = () => {
     return {
@@ -134,18 +129,19 @@ const getSearchBlogs = async (req, res, next) => {
     
     const pageNumber = Number(req.query.page) || 1;
     const blogs = await Blog.find({
-        $text: {
-            $search: query
-        }
-    }, {
-        score: {
-            $meta: 'textScore'
-        }
-    }).sort({
-        score: {
-            $meta: 'textScore'
-        }}
-    );
+                            $text: {
+                                $search: query
+                            }
+                        }, {
+                            score: {
+                                $meta: 'textScore'
+                            }
+                        }).sort({
+                            score: {
+                                $meta: 'textScore'
+                            }}
+                        ).select({likes: 0, comments: 0, score: 0, _v: 0});
+    console.log(blogs);
     const numberOfBlogs = blogs.length;
 
     return res.render('blogs', {
@@ -164,12 +160,19 @@ const getBlogById = async (req, res, next) => {
     try {
         const {blogId} = req.params;
         const blogObjectId = new mongoose.Types.ObjectId(blogId);
-        const blog = await Blog.findById(blogObjectId).populate('user');
+        const blog = await Blog.findById(blogObjectId)
+                                    .lean()
+                                    .populate('user', {'userName': 1, '_id': 1})
+                                    .select({title: 1, content: 1, likes: 1, comments: 1});
+        
+        console.log(blog);
         if(!blog) {
             err = new Error(`blog with id ${blogObjectId} does not exist`);
             err.httpStatusCode = 404;
             return next(err);
-        }   
+        }  
+        
+
         return res.render('blog', {
             blog,
             userId: req.session.userId,
@@ -191,19 +194,16 @@ const likeBlog = async (req, res, next) => {
     const blogObjectId = new mongoose.Types.ObjectId(blogId);
     const userObjectId = new mongoose.Types.ObjectId(userId);
 
-    console.log(blogObjectId);
-    console.log(userObjectId);
-
     try {
         const blog = await Blog.findByIdAndUpdate(blogObjectId, {
-            $addToSet: {
-                likes: userObjectId
-            }
-        }, {
-            new: true
-        });
+                                $addToSet: {
+                                    likes: userObjectId
+                                }
+                            }, {
+                                new: true
+                            }).select({likes: 1, comments: 1});
+        
         return res.json({
-            blog,
             userId: req.session.userId,
             isCreator: blog.user === req.session.userId,
             status: 200,
@@ -224,16 +224,17 @@ const commentBlog = async (req, res, next) => {
     const userObjectId = new mongoose.Types.ObjectId(userId);
     try {
         const blog = await Blog.findByIdAndUpdate(blogObjectId, {
-            $push: {
-                comments: {
-                    userId: userObjectId,
-                    comment,
-                    createdAt: new Date()
-                }
-            }
-        }, {
-            new: true
-        });
+                                $push: {
+                                    comments: {
+                                        userId: userObjectId,
+                                        comment,
+                                        createdAt: new Date()
+                                    }
+                                }
+                            }, {
+                                new: true
+                            }).select({likes: 1, comments: 1});
+
         return res.json({
             blog,
             userId: req.session.userId,
