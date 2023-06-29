@@ -1,25 +1,43 @@
 <%- include('layouts/layout') %>
         <h1>Read full blog Here</h1>
         <div id="blog-container">
-            <div class="blog">
-                <div class="blog-text">
-                    <h2><%= blog.title %></h2>
-                    <h4><%= blog.user.userName %></h4>
-                    <p><%= blog.content %></p>
-                </div>
-                <% if(userId.length > 0) { %>
-                    <div class="blog-button">
-                        <button class="btn" id="delete" data-blogid="<%= blog.id%>" data-userid="<%=  userId %>">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><path fill="#000" d="M15 3a1 1 0 0 1 1 1h2a1 1 0 1 1 0 2H6a1 1 0 0 1 0-2h2a1 1 0 0 1 1-1h6Z"></path><path fill="#000" fill-rule="evenodd" d="M6 7h12v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7Zm3.5 2a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 1 0v-9a.5.5 0 0 0-.5-.5Zm5 0a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 1 0v-9a.5.5 0 0 0-.5-.5Z" clip-rule="evenodd"></path></svg>
-                        </button>
-                        <button class="btn" id="edit" data-blogid="<%= blog.id%>" data-userid="<%=  userId %>">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5,18H9.24a1,1,0,0,0,.71-.29l6.92-6.93h0L19.71,8a1,1,0,0,0,0-1.42L15.47,2.29a1,1,0,0,0-1.42,0L11.23,5.12h0L4.29,12.05a1,1,0,0,0-.29.71V17A1,1,0,0,0,5,18ZM14.76,4.41l2.83,2.83L16.17,8.66,13.34,5.83ZM6,13.17l5.93-5.93,2.83,2.83L8.83,16H6ZM21,20H3a1,1,0,0,0,0,2H21a1,1,0,0,0,0-2Z"></path></svg>                      
-                        </button>
+            <div class="blog one-blog">
+                <div class="about-blog">
+                    <div class="blog-text">
+                        <h2><%= blog.title %></h2>
+                        <h4><%= blog.user.userName %></h4>
+                        <p><%= blog.content %></p>
                     </div>
-                <% } %>
+                    <% if(isCreator) { %>
+                        <div class="blog-button">
+                            <button class="btn" id="delete" data-blogid="<%= blog.id%>" data-userid="<%=  userId %>">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><path fill="#000" d="M15 3a1 1 0 0 1 1 1h2a1 1 0 1 1 0 2H6a1 1 0 0 1 0-2h2a1 1 0 0 1 1-1h6Z"></path><path fill="#000" fill-rule="evenodd" d="M6 7h12v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7Zm3.5 2a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 1 0v-9a.5.5 0 0 0-.5-.5Zm5 0a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 1 0v-9a.5.5 0 0 0-.5-.5Z" clip-rule="evenodd"></path></svg>
+                            </button>
+                            <button class="btn" id="edit" data-blogid="<%= blog.id%>" data-userid="<%=  userId %>">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5,18H9.24a1,1,0,0,0,.71-.29l6.92-6.93h0L19.71,8a1,1,0,0,0,0-1.42L15.47,2.29a1,1,0,0,0-1.42,0L11.23,5.12h0L4.29,12.05a1,1,0,0,0-.29.71V17A1,1,0,0,0,5,18ZM14.76,4.41l2.83,2.83L16.17,8.66,13.34,5.83ZM6,13.17l5.93-5.93,2.83,2.83L8.83,16H6ZM21,20H3a1,1,0,0,0,0,2H21a1,1,0,0,0,0-2Z"></path></svg>                      
+                            </button>
+                        </div>
+                    <% } %>
+                </div>   
+                <section class="like-comment">
+                    <div class="comment-div">
+                        <img src="/images/comment.png" alt="comment-img" class="comment" >
+                        <h3><%= totalComments %></h3>
+                        <form action="">
+                            <textarea id="comment" name="comment" rows="2" cols="50" style="width: 400px;" required></textarea><br><br>
+                            <button  value="Submit">post</button>
+                        </form>
+                    </div>
+                    <div class="like-div">
+                        <img src="/images/like.jpg" alt="comment-img" class="like">
+                        <h3><%= totalLikes %></h3>
+                    </div>
+                </section>
             </div>
         </div>
-        <% if(userId.length > 0) { %>
+        
+        <script src="http://localhost:3000/js/like-comment.js"></script>
+        <% if(isCreator) { %>
             <script src="http://localhost:3000/js/blog.js"></script>
         <% } %>
     </body>

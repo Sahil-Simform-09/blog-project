@@ -12,7 +12,7 @@ const user = require('../../models/user');
 const createNewBlog = () => {
     return {
         index(req, res) {
-            res.render('create', {whichWork: 'create'});
+            res.render('create', {whichWork: 'create', status: 200});
         },
         async create(req, res, next) {
             try {
@@ -53,7 +53,7 @@ const updateBlogById = () => {
                     err.httpStatusCode = 404;
                     return next(err);
                 }   
-                return res.render('create', {whichWork: 'edit', blog});
+                return res.render('create', {whichWork: 'edit', blog, status: 200});
             } catch (error) {
                 const err = new Error(error);
                 err.httpStatusCode = 500;
@@ -95,7 +95,7 @@ const deleteBlogById = async (req, res, next) => {
                 blogs: blogId
             }
         });
-        return res.json({message: 'Data Deleted successfully.', status: 'ok', redirectUrl: '/user/profile'});     
+        return res.json({message: 'Data Deleted successfully.', status: 200, redirectUrl: '/user/profile'});     
     } catch (error) {
         const err = new Error(error);
         err.httpStatusCode = 500;
@@ -113,6 +113,7 @@ const getAllBlog = async (req, res, next) => {
                                 .populate('user');
 
         return res.render('blogs', {
+            status: 200,
             blogs,
             numberOfBlogs,
             hasNextPage: pageNumber*TOTAL_BLOGS_PER_PAGE < numberOfBlogs,
@@ -138,7 +139,14 @@ const getBlogById = async (req, res, next) => {
             err.httpStatusCode = 404;
             return next(err);
         }   
-        return res.render('blog', {blog, userId: ''});
+        return res.render('blog', {
+            blog,
+            userId: req.session.userId,
+            isCreator: blog.user === req.session.userId,
+            status: 200,
+            totalLikes: blog.likes.length,
+            totalComments: blog.comments.length
+        });
     } catch (error) {
 	    const err = new Error(error);
 		error.name === "BSONError" ? err.httpStatusCode = 404 : err.httpStatusCode = 500;
@@ -156,9 +164,17 @@ const likeBlog = async (req, res, next) => {
             $addToSet: {
                 likes: userObjectId
             }
+        }, {
+            new: true
         });
-        const totalLikes = blog.likes.length;
-        return res.json({blog, totalLikes});
+        return res.json('blog', {
+            blog,
+            userId: req.session.userId,
+            isCreator: blog.user === req.session.userId,
+            status: 200,
+            totalLikes: blog.likes.length,
+            totalComments: blog.comments.length
+        });
     } catch(error) {
         const err = new Error(error);
         err.httpStatusCode = 500;
@@ -176,11 +192,22 @@ const commentBlog = async (req, res, next) => {
             $push: {
                 comments: {
                     userId: userObjectId,
-                    comment
+                    comment,
+                    createdAt: new Date()
                 }
             }
+        }, {
+            new: true
         });
-        return res.json({blog});
+        return res.json({
+            blog,
+            userId: req.session.userId,
+            isCreator: blog.user === req.session.userId,
+            status: 200,
+            totalLikes: blog.likes.length,
+            totalComments: blog.comments.length,
+            redirectUrl: req.originalUrl
+        });
     } catch(error) {
         const err = new Error(error);
         err.httpStatusCode = 500;

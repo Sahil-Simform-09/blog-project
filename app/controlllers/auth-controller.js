@@ -28,7 +28,7 @@ const handleSignUp = () => {
                 });
                 
                 await user.save();    
-                return res.render('login', {imgUrl: user.imgUrl, isRegistered: true});
+                return res.render('login', {imgUrl: user.imgUrl, isRegistered: true, status: 200});
             } catch (error) {
                 const err = new Error(error);
                 err.httpStatusCode = 500;
@@ -44,32 +44,51 @@ const handleLogin = () => {
         },
         async postLogin(req, res, next) {
             const {email, password} = req.body;
-            
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
                 // Return the validation errors
+                console.log('login timee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
                 return res.render('login', { email: '', password: '', errors: '', imgUrl: '', isRegistered: false });
             }
 
             try {
 
-                const user = await User.findOne({email});
+                const user = await User.findOne({email}).populate('blogs');
                 
                 // check email exist in Database
                 if(!user) {
-                    return res.render('login',  { email: '', password: '', errors: '', imgUrl: '', isRegistered: false });
+                    return res.render('profile', {
+                        message: 'User doest not exist with this email',
+                        status: 401,
+                        user: {userId: '', userName: '', email: '', imgUrl: ''},
+                        blogs: '',
+                        loggedInTime: false
+                    });
                 }
 
                 // check password
                 const hashedPassword = user.password;
                 const result = await bcrypt.compare(password, hashedPassword);
                 if(!result) {
-                    return res.render('login', { email: '', password: '', errors: '', imgUrl: '', isRegistered: false });
+                    return res.render('profile', {
+                        message: 'User doest not exist with this email',
+                        status: 401,
+                        user: {userId: '', userName: '', email: '', imgUrl: ''},
+                        blogs: '',
+                        loggedInTime: false
+                    });
                 }
                 
                 req.session.isLoggedIn = true;
                 req.session.userId = user._id;
-                return res.redirect('/user/profile');
+                console.log(user.blogs);
+                return res.render('profile', {
+                    message: 'logged in',
+                    status: 200,
+                    user: {userId: user._id, userName: user.userName, email: user.email, imgUrl: user.imgUrl},
+                    blogs: user.blogs,
+                    loggedInTime: true
+                });
             } catch (error) {
                 const err = new Error(error);
                 err.httpStatusCode = 500;
@@ -78,15 +97,14 @@ const handleLogin = () => {
         }            
     }
 }
-const handleLogout = (req, res, next) => {
-    req.session.destroy(err => {
-        if(err) {
-            const err = new Error(err);
-            err.httpStatusCode = 500;
-            next(err);
-        }
-
+const handleLogout = async (req, res, next) => {
+    try {
+        await  req.session.destroy();
         return res.redirect('/auth/login');
-    });
+    } catch (error) {
+        const err = new Error(err);
+        err.httpStatusCode = 500;
+        next(err);
+    }
 }
 module.exports = {handleLogin, handleSignUp, handleLogout};

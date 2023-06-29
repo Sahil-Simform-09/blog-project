@@ -6,6 +6,9 @@
                 <input id="file" type="file" name="profile-img">
                 <button type="submit">Upload image</button>
             </form>
+            <% if(loggedInTime) { %>
+                <p hidden data-user="<%= JSON.stringify(user) %>" id="hidden-user"></p>
+            <% } %>
             <h2><%= user.userName %></h2>
             <p><%= user.email %></p>
         </div>
@@ -27,4 +30,7 @@
             <% }); %>
         </div> 
     </body>
+    <% if(loggedInTime) { %>
+        <script src="http://localhost:3000/js/profile.js"></script>
+    <% } %>
 </html>

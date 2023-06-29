@@ -26,7 +26,10 @@ const blogSchema = new mongoose.Schema({
     comment: {
       type: String
     },
-  }, {timestamps: true}]
+    createdAt: {
+      type: Date
+    }
+  },]
 }, {timestamps: true});
 
 module.exports = mongoose.model('Blog', blogSchema);

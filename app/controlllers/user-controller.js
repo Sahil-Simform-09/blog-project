@@ -6,10 +6,13 @@ const User = require('../../models/user.js');
 const handleUserProfile = async (req, res, next) => { 
     try {
         const user = await User.findById(req.session.userId).populate('blogs');
-
-        res.render('profile', {
-            user: {userName: user.userName, email: user.email, imgUrl: user.imgUrl},
-            blogs: user.blogs
+        console.log(user);
+        return res.render('profile', {
+            message: '',
+            status: 200,
+            user: {userId: user._id, userName: user.userName, email: user.email, imgUrl: user.imgUrl},
+            blogs: user.blogs,
+            loggedInTime: false
         });
     } catch (error) {
         const err = new Error(error);
@@ -28,7 +31,14 @@ const getBlogById = async (req, res, next) => {
             err.httpStatusCode = 404;
             return next(err);
         }   
-        return res.render('blog', {blog, userId: req.session.userId.toString()});
+        return res.render('blog', {
+            blog,
+            userId: req.session.userId,
+            isCreator: blog.user === req.session.userId,
+            status: 200,
+            totalLikes: blog.likes.length,
+            totalComments: blog.comments.length
+        });
     } catch (error) {
 	    const err = new Error(error);
 		error.name === "BSONError" ? err.httpStatusCode = 404 : err.httpStatusCode = 500;

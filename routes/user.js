@@ -18,8 +18,8 @@ const storage = multer.diskStorage({
 const upload = multer({storage: storage});
 
 // add profile image
-router.get('/profile', handleUserProfile );
-router.post('/profile', upload.single('profile-img') ,handleUserProfileImage);
+router.get('/profile', guest, handleUserProfile );
+router.post('/profile', edit, upload.single('profile-img') ,handleUserProfileImage);
 
 // get particular blogs by id
 router.get('/blog/:blogId', getBlogById);
