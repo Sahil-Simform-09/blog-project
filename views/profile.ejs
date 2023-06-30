@@ -1,7 +1,7 @@
 <%- include('layouts/layout') %>
         <div class="profile">
             <img src="<%= user.imgUrl %>" alt="">
-            <form action="/user/profile" method="POST" enctype="multipart/form-data" accept="image/*">
+            <form action="" method="POST" enctype="multipart/form-data" accept="image/*">
                 <label >Add Your Image</label>
                 <input id="file" type="file" name="profile-img">
                 <button type="submit">Upload image</button>
@@ -35,4 +35,5 @@
     <% if(loggedInTime) { %>
         <script src="http://localhost:3000/js/profile.js"></script>
     <% } %>
+    <script src="http://localhost:3000/js/getUser.js"></script>
 </html>

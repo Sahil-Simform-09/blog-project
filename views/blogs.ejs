@@ -1,6 +1,6 @@
 <%- include('layouts/layout') %>
         <div class="search-container">
-            <form action="/blog/search" method="POST">
+            <form action="/blog/search/" method="get">
                 <input type="text" placeholder="Search Blogs" name="query">
                 <button type="submit">Search</button>
             </form>
@@ -29,17 +29,17 @@
         </div>
         <section class="pagination">
             <%  if(currentPage !== 1) { %>
-                <a href="/blog/?page=1">1</a>
+                <a href="/blog/<% if(isFilter) { %>search?query=<%= query %><% } %><% if(isFilter) { %>&<% } else { %>?<%  } %>page=1">1</a>
             <% } %> 
             <%  if(hasPrevPage && prevPage !== 1) { %>
-                <a href="/blog/?page=<%= prevPage %>"><%= prevPage %></a>
+                <a href="/blog/<% if(isFilter) { %>search?query=<%= query %><% } %><% if(isFilter) { %>&<% } else { %>?<%  } %>page=<%= prevPage %>"><%= prevPage %></a>
             <% } %> 
-                <a href="/blog/?page=<%= currentPage %>" class="current-page"><%= currentPage %></a>
+                <a href="/blog/<% if(isFilter) { %>search?query=<%= query %><% } %><% if(isFilter) { %>&<% } else { %>?<%  } %>page=<%= currentPage %>" class="current-page"><%= currentPage %></a>
             <%  if(hasNextPage && nextPage !== lastPage) { %>
-                <a href="/blog/?page=<%= nextPage %>"><%= nextPage %></a>
+                <a href="/blog/<% if(isFilter) { %>search?query=<%= query %><% } %><% if(isFilter) { %>&<% } else { %>?<%  } %>page=<%= nextPage %>"><%= nextPage %></a>
             <% } %> 
             <%  if(currentPage < lastPage) { %>
-                <a href="/blog/?page=<%= lastPage %>"><%= lastPage %></a>
+                <a href="/blog/<% if(isFilter) { %>search?query=<%= query %><% } %><% if(isFilter) { %>&<% } else { %>?<%  } %>page=<%= lastPage %>"><%= lastPage %></a>
             <% } %> 
         </section>
     </body>

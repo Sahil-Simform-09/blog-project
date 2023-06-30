@@ -11,6 +11,9 @@ router.get('/', getAllBlog);
 router.get('/create', guest, createNewBlog().index);
 router.post('/create', guest, createNewBlog().create);
 
+// get search blogs
+router.get('/search', getSearchBlogs);
+
 // get particular blogs by id
 router.get('/:blogId', getBlogById);
 
@@ -26,8 +29,5 @@ router.post('/:blogId/like', guest, likeBlog);
 
 // add comment
 router.post('/:blogId/comment', guest, commentBlog);
-
-// get search blogs
-router.post('/search', getSearchBlogs);
 
 module.exports = router;

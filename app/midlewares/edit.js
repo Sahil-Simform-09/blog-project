@@ -4,7 +4,6 @@ const edit = (req, res, next) => {
         return res.redirect('/auth/login');
     }
     if(req.session.userId.toString() !== req.params.userId) {
-        console.log(req.session.userId.toString(), ' ' , req.params.userId);
         const err = new Error('Page Not found');
         err.httpStatusCode = 404;
         throw err;

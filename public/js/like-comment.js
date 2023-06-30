@@ -9,8 +9,9 @@ const makeReuest = async (body, WhichRequest) => {
         body: JSON.stringify(body)
     });
 
-    console.log(blogId);
+    
     const responseObj = await response.json();
+    console.log(responseObj);
     const responseUrl = responseObj.redirectUrl;
     const redirectUrl = responseUrl.substring(0, responseUrl.lastIndexOf('/'));
 
@@ -44,5 +45,6 @@ likeBtn.addEventListener('click', async event => {
     const body = {
         userId: user.userId
     }
+    console.log(body); 
     makeReuest(body, 'like');
 });

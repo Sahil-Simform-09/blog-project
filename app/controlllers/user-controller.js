@@ -51,10 +51,11 @@ const getBlogById = async (req, res, next) => {
 const handleUserProfileImage = async (req, res, next) => {
     try {
         const userId = req.session.userId;
+        console.log('req fileee;]', req.file);
 	    await User.findByIdAndUpdate(userId, {
             imgUrl: `/uploads/${req.file.filename}`
-        });
-		return res.redirect('/user/profile');
+        }).lean();
+		return res.json({message: 'image updated', status: 200, redirectUrl: '/user/profile'});
 	} catch (error) {
         const err = new Error(error); 
         err.httpStatusCode = 500;

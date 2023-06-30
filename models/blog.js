@@ -15,11 +15,8 @@ const blogSchema = new mongoose.Schema({
     required: true
   },
   likes: [{
-    userId: {
       type: mongoose.Schema.Types.ObjectId,
-      unique: true,
-      timestamps: true
-    }   
+      createdAt: new Date()
   }], 
   comments: [{
     userId: {

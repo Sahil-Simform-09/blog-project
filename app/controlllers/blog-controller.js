@@ -2,7 +2,7 @@ const Blog = require('../../models/blog');
 const User = require('../../models/user');
 const mongoose = require('mongoose');
 
-const TOTAL_BLOGS_PER_PAGE = 1;
+const TOTAL_BLOGS_PER_PAGE = 3;
 
 const createNewBlog = () => {
     return {
@@ -101,8 +101,6 @@ const getAllBlog = async (req, res, next) => {
     try {
         const pageNumber = Number(req.query.page) || 1;
 
-        console.log(req.originalUrl);
-
         const numberOfBlogs = await Blog.find().countDocuments();
         const blogs = await Blog.find()
                                 .lean()
@@ -120,7 +118,9 @@ const getAllBlog = async (req, res, next) => {
             currentPage: pageNumber,
             nextPage: pageNumber + 1,
             prevPage: pageNumber - 1,
-            lastPage: Math.ceil(numberOfBlogs / TOTAL_BLOGS_PER_PAGE)
+            lastPage: Math.ceil(numberOfBlogs / TOTAL_BLOGS_PER_PAGE),
+            isFilter: false,
+            query: null
         });
     } catch (error) {
         const err = new Error(error);
@@ -129,8 +129,7 @@ const getAllBlog = async (req, res, next) => {
     }
 }
 const getSearchBlogs = async (req, res, next) => {
-    const {query} = req.body;
-    
+    const {query} = req.query; 
     const pageNumber = Number(req.query.page) || 1;
 
     const blogs = await Blog.find({
@@ -166,7 +165,9 @@ const getSearchBlogs = async (req, res, next) => {
         currentPage: pageNumber,
         nextPage: pageNumber + 1,
         prevPage: pageNumber - 1,
-        lastPage: Math.ceil(numberOfBlogs / TOTAL_BLOGS_PER_PAGE)
+        lastPage: Math.ceil(numberOfBlogs / TOTAL_BLOGS_PER_PAGE),
+        isFilter: true,
+        query 
     });
 }
 const getBlogById = async (req, res, next) => {
@@ -177,21 +178,19 @@ const getBlogById = async (req, res, next) => {
                                     .lean()
                                     .populate('user', {'userName': 1, '_id': 1})
                                     .select({title: 1, content: 1, likes: 1, comments: 1});
-        
+    
         if(!blog) {
             err = new Error(`blog with id ${blogObjectId} does not exist`);
             err.httpStatusCode = 404;
             return next(err);
         }  
-        
-
         return res.render('blog', {
-            blog,
+            blog,                      
             userId: req.session.userId,
             isCreator: blog.user === req.session.userId,
             status: 200,
             totalLikes: blog.likes.length,
-            totalComments: blog.comments.length
+            totalComments: blog.comments.length,
         });
     } catch (error) {
 	    const err = new Error(error);
@@ -220,7 +219,8 @@ const likeBlog = async (req, res, next) => {
             isCreator: blog.user === req.session.userId,
             status: 200,
             totalLikes: blog.likes.length,
-            totalComments: blog.comments.length
+            totalComments: blog.comments.length,
+            redirectUrl: req.originalUrl
         });
     } catch(error) {
         const err = new Error(error);

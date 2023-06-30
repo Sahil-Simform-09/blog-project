@@ -246,7 +246,7 @@ input[type="submit"]:hover {
   font-size: 16px;
 }
 
-.search-container button[type="submit"] {
+.search-container button[type="submit"], post-comment[type="submit"] {
   padding: 10px 20px;
   background-color: #4CAF50;
   border: none;
