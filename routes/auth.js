@@ -20,7 +20,7 @@ router.post(
         body('email')
         .notEmpty().withMessage('Email is required')
         .custom( async (email, {}) => {
-            const user = await User.find({email});
+            const user = await User.find({email}).lean().select({_id : 1});
             if (!user) {
                 return Promise.reject('User allready exist with this email');
             }

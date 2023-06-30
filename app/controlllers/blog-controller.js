@@ -2,7 +2,7 @@ const Blog = require('../../models/blog');
 const User = require('../../models/user');
 const mongoose = require('mongoose');
 
-const TOTAL_BLOGS_PER_PAGE = 3;
+const TOTAL_BLOGS_PER_PAGE = 1;
 
 const createNewBlog = () => {
     return {
@@ -41,7 +41,7 @@ const updateBlogById = () => {
             try {
                 const {blogId} = req.params;
                 const blogObjectId = new mongoose.Types.ObjectId(blogId);
-                const blog = await Blog.findById(blogObjectId);
+                const blog = await Blog.findById(blogObjectId).lean().select({_id: 1, title: 1, content: 1});
                 
                 if(!blog) {
                     err = new Error(`blog with id ${blogObjectId} does not exist`);
@@ -62,7 +62,7 @@ const updateBlogById = () => {
                 const {blogId} = req.params;
                 const blogObjectId = new mongoose.Types.ObjectId(blogId);
 
-                const updatedBlog = await Blog.findByIdAndUpdate(blogObjectId, {
+                await Blog.findByIdAndUpdate(blogObjectId, {
                     title: blog.title,
                     content: blog.content
                 });
@@ -101,12 +101,16 @@ const getAllBlog = async (req, res, next) => {
     try {
         const pageNumber = Number(req.query.page) || 1;
 
+        console.log(req.originalUrl);
+
         const numberOfBlogs = await Blog.find().countDocuments();
         const blogs = await Blog.find()
+                                .lean()
                                 .skip((pageNumber - 1) * TOTAL_BLOGS_PER_PAGE)
                                 .limit(TOTAL_BLOGS_PER_PAGE)
-                                .populate('user');
-
+                                .populate('user', {_id: 1, userName: 1})
+                                .select({title: 1, _id: 1, content: 1});
+        
         return res.render('blogs', {
             status: 200,
             blogs,
@@ -128,21 +132,30 @@ const getSearchBlogs = async (req, res, next) => {
     const {query} = req.body;
     
     const pageNumber = Number(req.query.page) || 1;
+
     const blogs = await Blog.find({
                             $text: {
                                 $search: query
                             }
-                        }, {
-                            score: {
-                                $meta: 'textScore'
-                            }
-                        }).sort({
+                        })
+                        .lean()
+                        .skip((pageNumber - 1) * TOTAL_BLOGS_PER_PAGE)
+                        .limit(TOTAL_BLOGS_PER_PAGE)
+                        .populate('user', {_id: 1, userName: 1})
+                        .sort({
                             score: {
                                 $meta: 'textScore'
                             }}
-                        ).select({likes: 0, comments: 0, score: 0, _v: 0});
-    console.log(blogs);
-    const numberOfBlogs = blogs.length;
+                        )
+                        .select({likes: 0, comments: 0, score: 0});
+
+    const numberOfBlogs = await Blog.find({
+                                    $text: {
+                                        $search: query
+                                    }
+                                })
+                                .lean()
+                                .count();
 
     return res.render('blogs', {
         status: 200,
@@ -165,7 +178,6 @@ const getBlogById = async (req, res, next) => {
                                     .populate('user', {'userName': 1, '_id': 1})
                                     .select({title: 1, content: 1, likes: 1, comments: 1});
         
-        console.log(blog);
         if(!blog) {
             err = new Error(`blog with id ${blogObjectId} does not exist`);
             err.httpStatusCode = 404;

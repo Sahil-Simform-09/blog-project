@@ -1,4 +1,3 @@
-const fs = require('fs/promises');
 const bcrypt = require('bcrypt');
 const {validationResult} = require('express-validator');
 const User = require('../../models/user');
@@ -47,14 +46,15 @@ const handleLogin = () => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
                 // Return the validation errors
-                console.log('login timee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
                 return res.render('login', { email: '', password: '', errors: '', imgUrl: '', isRegistered: false });
             }
 
             try {
 
-                const user = await User.findOne({email}).populate('blogs');
-                
+                const user = await User.findOne({email})
+                                        .lean()
+                                        .populate('blogs', {_id: 1, title: 1, content: 1})
+                                        .select();
                 // check email exist in Database
                 if(!user) {
                     return res.render('profile', {

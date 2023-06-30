@@ -1,11 +1,12 @@
-const fs = require('fs/promises');
 const mongoose = require('mongoose');
 const Blog = require('../../models/blog.js');
 const User = require('../../models/user.js');
 
 const handleUserProfile = async (req, res, next) => { 
     try {
-        const user = await User.findById(req.session.userId).populate('blogs');
+        const user = await User.findById(req.session.userId)
+                                .lean()
+                                .populate('blogs');
         console.log(user);
         return res.render('profile', {
             message: '',
@@ -25,7 +26,9 @@ const getBlogById = async (req, res, next) => {
     try {
         const {blogId} = req.params;
         const blogObjectId = new mongoose.Types.ObjectId(blogId);
-        const blog = await Blog.findById(blogObjectId);
+        const blog = await Blog.findById(blogObjectId).lean();
+
+        console.log(blog);
         if(!blog) {
             err = new Error(`blog with id ${blogObjectId} does not exist`);
             err.httpStatusCode = 404;
@@ -48,7 +51,7 @@ const getBlogById = async (req, res, next) => {
 const handleUserProfileImage = async (req, res, next) => {
     try {
         const userId = req.session.userId;
-	    const user = await User.findByIdAndUpdate(userId, {
+	    await User.findByIdAndUpdate(userId, {
             imgUrl: `/uploads/${req.file.filename}`
         });
 		return res.redirect('/user/profile');
