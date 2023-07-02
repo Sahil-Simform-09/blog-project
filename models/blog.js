@@ -16,7 +16,8 @@ const blogSchema = new mongoose.Schema({
   },
   likes: [{
       type: mongoose.Schema.Types.ObjectId,
-      createdAt: new Date()
+      createdAt: new Date(),
+      index: false
   }], 
   comments: [{
     userId: {
@@ -31,4 +32,16 @@ const blogSchema = new mongoose.Schema({
   },]
 }, {timestamps: true});
 
+// create search index
+blogSchema.index(
+  {
+    title: 'text',
+    content: 'text'
+  }, {
+    weights: {
+      title: 2,
+      content: 1
+    }
+  }
+);
 module.exports = mongoose.model('Blog', blogSchema);

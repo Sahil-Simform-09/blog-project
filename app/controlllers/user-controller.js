@@ -51,7 +51,7 @@ const getBlogById = async (req, res, next) => {
 const handleUserProfileImage = async (req, res, next) => {
     try {
         const userId = req.session.userId;
-        console.log('req fileee;]', req.file);
+        console.log('req fileee', req.file);
 	    await User.findByIdAndUpdate(userId, {
             imgUrl: `/uploads/${req.file.filename}`
         }).lean();

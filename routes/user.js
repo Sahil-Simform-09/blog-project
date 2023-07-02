@@ -19,7 +19,7 @@ const upload = multer({storage: storage});
 
 // add profile image
 router.get('/profile', guest, handleUserProfile );
-router.post('/profile/:userId', guest, upload.single('profile-img') ,handleUserProfileImage);
+router.patch('/profile/:userId', edit, upload.single('profile-img') ,handleUserProfileImage);
 
 // get particular blogs by id
 router.get('/blog/:blogId', getBlogById);
