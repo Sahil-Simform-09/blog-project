@@ -25,3 +25,5 @@
     - Flash messages: Flash messages are temporary messages that provide feedback or notifications to the user. Storing them in the session allows you to display them on subsequent pages after a redirect.
     - CSRF tokens: Cross-Site Request Forgery (CSRF) tokens are used to protect against malicious requests. Storing them in the session ensures that they are accessible across multiple requests.
 - It's important to note that session stores are typically limited in size and have memory constraints. Storing large amounts of data in the session can lead to performance issues or session storage limitations. Therefore, it's recommended to keep session data small and avoid storing sensitive information unless necessary
+## Why we need storage engine in multer?
+## Where disk storage images are stored when using multer?

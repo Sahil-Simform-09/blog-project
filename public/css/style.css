@@ -54,11 +54,16 @@ li a:hover {
 }
 
 /* CSS for individual blogs */
+.about-blog {
+  display: flex;
+  flex-direction: row;
+}
 .blog {
     background-color: #f2f2f2;
     padding: 20px;
     margin-bottom: 20px;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
 }
 .blog-button {
@@ -68,11 +73,30 @@ li a:hover {
 }
 .blog h2 {
     font-size: 24px;
+    padding: 6px 0;
     color: #333;
 }
 .blog p {
+    padding: 6px 0;
     font-size: 16px;
     color: #666;
+}
+.blog a {
+  padding: 6px 0;
+}
+.delete, .edit, .like, .comment {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+.like-comment {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.like-div, .comment-div {
+  margin:0 30px;
 }
 /* CSS for form container */
 form {
@@ -151,4 +175,87 @@ input[type="submit"]:hover {
   .login-container button:hover {
     background-color: #45a049;
   }
-  
+
+/* profile styeling */
+.profile {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+}
+ .profile img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+.profile h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.profile p {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.err {
+  background-color: rgb(221, 122, 122);
+  color: black;
+  text-align: center;
+  width: 600px;
+  height: 70px;
+  margin: auto;
+  padding: 10px;
+  margin-top: 50px;
+}
+
+.pagination {
+  display: inline-block;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  margin: 3px;
+}
+.pagination a:hover {
+  background-color: #f2f2f2;
+}
+.current-page {
+  background-color: #f2f2f2;
+}
+.search-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.search-container input[type="text"] {
+  width: 300px;
+  padding: 10px;
+  border: none;
+  background-color: #f2f2f2;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.search-container button[type="submit"], post-comment[type="submit"] {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.search-container button[type="submit"]:hover {
+  background-color: #45a049;
+}

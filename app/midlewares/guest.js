@@ -1,5 +1,6 @@
 const guest = (req, res, next) => {
-    if(!req.session.isAuthenticated) {
+    if(!req.session.isLoggedIn) {
+        console.log('not loggedIn');
         return res.redirect('/auth/login');
     }
     return next();
