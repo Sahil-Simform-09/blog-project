@@ -13,12 +13,12 @@ const createNewBlog = () => {
             try {
                 const {title, content} = req.body;
                 const userId = req.session.userId;
-              
+                
                 const blog = new Blog({ // create new blog
                     title,
                     user: userId,
                     content
-                })
+                });
                 await blog.save();
 
                 await User.findByIdAndUpdate(userId, { // add blogId in user collection
@@ -26,7 +26,7 @@ const createNewBlog = () => {
                         blogs: blog.id
                     }
                 });
-                return res.redirect('/user/profile');
+                res.redirect('/user/profile');
             } catch(error) {
                 const err = new Error(error);
                 err.httpStatusCode = 500;
@@ -47,7 +47,7 @@ const updateBlogById = () => {
                     err = new Error(`blog with id ${blogObjectId} does not exist`);
                     err.httpStatusCode = 404;
                     return next(err);
-                }   
+                }  
                 return res.render('create', {whichWork: 'edit', blog, status: 200});
             } catch (error) {
                 const err = new Error(error);
@@ -61,12 +61,11 @@ const updateBlogById = () => {
 
                 const {blogId} = req.params;
                 const blogObjectId = new mongoose.Types.ObjectId(blogId);
-
                 await Blog.findByIdAndUpdate(blogObjectId, {
                     title: blog.title,
                     content: blog.content
                 });
-                return res.json({message: 'Data Deleted successfully.', status: 'ok', redirectUrl: '/user/profile'});
+                return res.json({message: 'Data updated successfully.', status: 'ok', redirectUrl: '/user/profile'});
             } catch (error) {
                 const err = new Error(error);
                 err.httpStatusCode = 500;
@@ -187,7 +186,7 @@ const getBlogById = async (req, res, next) => {
         return res.render('blog', {
             blog,                      
             userId: req.session.userId,
-            isCreator: blog.user === req.session.userId,
+            isCreator: blog.user._id.equals(req.session.userId),
             status: 200,
             totalLikes: blog.likes.length,
             totalComments: blog.comments.length,

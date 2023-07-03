@@ -1,5 +1,4 @@
 const edit = (req, res, next) => {
-    console.log("in esdit middleware");
     if(!req.session.isLoggedIn) {
         return res.redirect('/auth/login');
     }

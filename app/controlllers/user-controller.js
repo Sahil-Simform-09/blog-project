@@ -7,13 +7,12 @@ const handleUserProfile = async (req, res, next) => {
         const user = await User.findById(req.session.userId)
                                 .lean()
                                 .populate('blogs');
-        console.log(user);
         return res.render('profile', {
             message: '',
             status: 200,
             user: {userId: user._id, userName: user.userName, email: user.email, imgUrl: user.imgUrl},
             blogs: user.blogs,
-            loggedInTime: false
+            loggedInTime: false,
         });
     } catch (error) {
         const err = new Error(error);
@@ -28,19 +27,19 @@ const getBlogById = async (req, res, next) => {
         const blogObjectId = new mongoose.Types.ObjectId(blogId);
         const blog = await Blog.findById(blogObjectId).lean();
 
-        console.log(blog);
         if(!blog) {
             err = new Error(`blog with id ${blogObjectId} does not exist`);
             err.httpStatusCode = 404;
             return next(err);
         }   
+
         return res.render('blog', {
             blog,
             userId: req.session.userId,
-            isCreator: blog.user === req.session.userId,
+            isCreator: blog.user.equals(req.session.userId),
             status: 200,
             totalLikes: blog.likes.length,
-            totalComments: blog.comments.length
+            totalComments: blog.comments.length,
         });
     } catch (error) {
 	    const err = new Error(error);
@@ -54,6 +53,7 @@ const handleUserProfileImage = async (req, res, next) => {
 	    await User.findByIdAndUpdate(userId, {
             imgUrl: `/uploads/${req.file.filename}`
         }).lean();
+        console.log('update request');
 		return res.json({
             message: 'image updated',
             status: 200,

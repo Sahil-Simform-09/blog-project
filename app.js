@@ -3,8 +3,8 @@ const express  = require('express');
 const app = express();
 const session = require('express-session');
 const helmet = require('helmet');
-const mongoose = require('mongoose');
 const MongoStore = require('connect-mongodb-session')(session);
+const connectDB = require('./config/db');
 
 // rquire all routes
 const homeRouter = require('./routes/home');
@@ -20,11 +20,7 @@ const helper = require('./app/midlewares/helper');
 app.set('view engine', 'ejs');
 
 // mongodb connection
-mongoose.connect(process.env.MONGO_URL)
-    .then(() => console.log('Database connected!!!'))
-    .catch( err => {
-        throw new Error(err);
-    });
+connectDB();
 
 // ------------------------------ middlewares ------------------------------ //
 //------ Use the session middleware //

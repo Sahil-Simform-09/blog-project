@@ -1,5 +1,5 @@
 const buttonContainer = document.querySelector('.blog-button');
-buttonContainer.addEventListener('click', event => {
+buttonContainer.addEventListener('click', async event => {
     
     const blogId = event.target.dataset.blogid;
     const userId = event.target.dataset.userid;
@@ -13,17 +13,16 @@ buttonContainer.addEventListener('click', event => {
     }
 
     if(whichWork === 'delete') {
-        let url =  `http://localhost:3000/blog/${blogId}/${whichWork}/${userId}/`;
-        console.log(url);
-        fetch(url, {
-            method: whichWork.toUpperCase()
-        })
-        .then(response =>  response.json())
-        .then(data => {
-            location = 'http://localhost:3000' = data.redirectUrl;
-        })
-        .catch(error => {
+        try {
+            const response = await fetch(`http://localhost:3000/blog/${blogId}/${whichWork}/${userId}/`, {
+                method: whichWork
+            })
+            console.log(whichWork);
+            const responseObj = await response.json();
+    
+            location = 'http://localhost:3000' + responseObj.redirectUrl;
+        } catch (error) {
             console.log(error);
-        });
+        }
     }
 });

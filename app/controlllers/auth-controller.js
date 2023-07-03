@@ -27,11 +27,7 @@ const handleSignUp = () => {
                 });
                 
                 await user.save();   
-                return res.render('login', {
-                    message: 'successfully signup',
-                    status: 200,
-                    user: {email, password}
-                }); 
+                return res.redirect('/auth/login');
             } catch (error) {
                 const err = new Error(error);
                 err.httpStatusCode = 500;
@@ -96,7 +92,7 @@ const handleLogin = () => {
                     status: 200,
                     user: {userId: user._id, userName: user.userName, email: user.email, imgUrl: user.imgUrl},
                     blogs: user.blogs,
-                    loggedInTime: true
+                    loggedInTime: true,
                 });
             } catch (error) {
                 const err = new Error(error);
