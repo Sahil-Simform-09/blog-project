@@ -6,15 +6,20 @@ userImg.setAttribute('src', `${user.imgUrl}`);
 const form = document.querySelector('.profile form');
 form.addEventListener('submit', async event => {
     event.preventDefault();
+ 
+    const imageFile = document.querySelector('#file').files[0];
+    const formData = new FormData();
+    formData.append('image', imageFile);
 
-    const formData = new FormData(form);
-
-    console.log(formData);
     const response = await fetch(`http://localhost:3000/user/profile/${user.userId}`, {
-        method: 'patch',
-        body: formData,   
-    });
+        method: 'PATCH',
+        body: formData,
+      });
+  
     const responseObj = await response.json();
-
-    console.log(responseObj);
+    const responseUrl = responseObj.redirectUrl;
+    
+    user.imgUrl = responseObj.imgUrl;
+    localStorage.setItem('user', JSON.stringify(user));
+    location = `http://localhost:3000${responseUrl}`;
 });

@@ -4,7 +4,7 @@
             <form action="" method="POST" enctype="multipart/form-data" accept="image/*">
                 <label >Add Your Image</label>
                 <input id="file" type="file" name="profile-img">
-                <button type="submit">Upload image</button>
+                <button type="submit" name="submit" id="submit-file">Upload image</button>
             </form>
             <% if(loggedInTime) { %>
                 <p hidden data-user="<%= JSON.stringify(user) %>" id="hidden-user"></p>
