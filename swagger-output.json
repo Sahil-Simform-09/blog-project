@@ -1,0 +1,549 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "My API",
+    "description": "Description",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": ["Home"],
+        "description": "",
+        "responses": {
+          "default": {
+            "description": "Home page"
+          }
+        }
+      }
+    },
+    "/blog/": {
+      "get": {
+        "tags": ["Blogs"],
+        "description": "get all blogs",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal server errror"
+          }
+        }
+      }
+    },
+    "/blog/create": {
+      "post": {
+        "tags": ["Blogs"],
+        "description": "create a blog post",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "example": {
+                "title":"My API",
+                "content": "create a blog post",
+                "author": "Sahil Mistry"
+              },
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                },
+                "author": {
+                  "type":"string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "blog post created successfully"
+          },
+          "500": {
+            "description": "internal server errror"
+          }
+        }
+      }
+    },
+    "/blog/{blogId}": {
+      "get": {
+        "tags": ["Blogs"],
+        "description": "get blog post by id",
+        "parameters": [
+          {
+            "name": "blogId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "blog post found",
+            "schema": {
+              "type": "object",
+              "example": {
+                "data": {
+                  "_id": {
+                    "$oid": "64a27c6ec6654a8f39d7569e"
+                  },
+                  "title": "Angular",
+                  "user": {
+                    "$oid": "64a276c89a0682d1aa413d26"
+                  },
+                  "content": "Welcome to Angular",
+                  "likes": [
+                    {
+                      "$oid": "64a276849a0682d1aa413d1f"
+                    }
+                  ],
+                  "comments": [],
+                  "createdAt": {
+                    "$date": "2023-07-03T07:44:46.360Z"
+                  },
+                  "updatedAt": {
+                    "$date": "2023-07-03T08:45:08.932Z"
+                  },
+                  "__v": 0
+                }
+              }
+            },
+            "properties": {
+              "data": {
+                "type": "object"
+              }
+            }
+          },
+          "500": {
+            "description": "internal server errror"
+          }
+        }
+      }
+    },
+    "/blog/{blogId}/edit": {
+      "get": {
+        "tags": ["Blogs"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "blogId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "blog post to edit",
+            "schema": {
+              "type": "object",
+              "example": {
+                "data": {
+                  "_id": {
+                    "$oid": "64a27c6ec6654a8f39d7569e"
+                  },
+                  "title": "Angular",
+                  "user": {
+                    "$oid": "64a276c89a0682d1aa413d26"
+                  },
+                  "content": "Welcome to Angular",
+                  "likes": [
+                    {
+                      "$oid": "64a276849a0682d1aa413d1f"
+                    }
+                  ],
+                  "comments": [],
+                  "createdAt": {
+                    "$date": "2023-07-03T07:44:46.360Z"
+                  },
+                  "updatedAt": {
+                    "$date": "2023-07-03T08:45:08.932Z"
+                  },
+                  "__v": 0
+                }
+              }
+            },
+            "properties": {
+              "data": {
+                "type": "object"
+              }
+            }
+          },
+          "500": {
+            "description": "internal server errror"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Blogs"],
+        "description": "edit blog post",
+        "parameters": [
+          {
+            "name": "blogId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "example": {
+                "data": {
+                  "_id": {
+                    "$oid": "64a27c6ec6654a8f39d7569e"
+                  },
+                  "title": "Angular",
+                  "content": "Welcome to Angular",
+                  "createdAt": {
+                    "$date": "2023-07-03T07:44:46.360Z"
+                  },
+                  "updatedAt": {
+                    "$date": "2023-07-03T08:45:08.932Z"
+                  },
+                  "__v": 0
+                }
+              },
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "blog post edited successfully"
+          },
+          "500": {
+            "description": "internal server errror"
+          }
+        }
+      }
+    },
+    "/blog/{blogId}/delete": {
+      "delete": {
+        "tags": ["Blogs"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "blogId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "blog post deleted successfully"
+          },
+          "500": {
+            "description": "internal server errror"
+          }
+        }
+      }
+    },
+    "/user/profile": {
+      "get": {
+        "tags": ["Users"],
+        "description": "get user profile",
+        "responses": {
+          "200": {
+            "description": "user found successfully",
+            "schema": {
+              "type": "object",
+              "example": {
+                "data": {
+                  "_id": {
+                    "$oid": "64a276849a0682d1aa413d1f"
+                  },
+                  "userName": "Sahil Mistry",
+                  "email": "sahil@gmail.com",
+                  "password": "$2b$10$KDNMIWab4EZieqRgFHcewuE.S7GVGHlbr/VqGcmCNH62QQxfeFLWq",
+                  "blogs": [
+                    {
+                      "$oid": "64a27d5b8b1fa61c4f028895"
+                    },
+                    {
+                      "$oid": "64a27e79a928d31a30786a77"
+                    },
+                    {
+                      "$oid": "64a288f076028e059aa21012"
+                    }
+                  ],
+                  "imgUrl": "/uploads/image-1688368818647.jpg",
+                  "createdAt": {
+                    "$date": "2023-07-03T07:19:32.526Z"
+                  },
+                  "updatedAt": {
+                    "$date": "2023-07-03T08:38:08.653Z"
+                  },
+                  "__v": 0
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server errror"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Users"],
+        "description": "edit user profile image",
+        "responses": {
+          "200": {
+            "description": "user profile edited successfully"
+          },
+          "500": {
+            "description": "internal server errror"
+          }
+        }
+      }
+    },
+    "/user/blog/{blogId}": {
+      "get": {
+        "tags": ["Users"],
+        "description": "get blog By id",
+        "parameters": [
+          {
+            "name": "blogId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "blog post found successfully",
+            "exmaple": {
+              "data": {
+                "_id": {
+                  "$oid": "64a27c6ec6654a8f39d7569e"
+                },
+                "title": "Angular",
+                "user": {
+                  "$oid": "64a276c89a0682d1aa413d26"
+                },
+                "content": "Welcome to Angular",
+                "likes": [
+                  {
+                    "$oid": "64a276849a0682d1aa413d1f"
+                  }
+                ],
+                "comments": [],
+                "createdAt": {
+                  "$date": "2023-07-03T07:44:46.360Z"
+                },
+                "updatedAt": {
+                  "$date": "2023-07-03T08:45:08.932Z"
+                },
+                "__v": 0
+              }
+            }
+          },
+          "500": {
+            "description": "internal server errror"
+          }
+        }
+      }
+    },
+    "/admin/": {
+      "get": {
+        "tags": ["admin"],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "internal server errror"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "get": {
+        "tags": ["Auth"],
+        "description": "user login",
+        "responses": {
+          "200": {
+            "description": "load login page"
+          },
+          "500": {
+            "description": "internal server errror"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Auth"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "sahil@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": ".S7GVGHlbr/VqGcmCNH62QQ"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user login successfully",
+            "schema": {
+              "type": "object",
+              "example": {
+                "data": {
+                  "user": {
+                    "_id": {
+                      "$oid": "64a276c89a0682d1aa413d26"
+                    },
+                    "userName": "Bhagvanji Nakum",
+                    "email": "bhagvanji@gmail.com",
+                    "password": "$2b$10$FNVavhhn6xMCi1ZsBOBhueiGrkBZMMR",
+                    "blogs": [
+                      {
+                        "$oid": "64a27c6ec6654a8f39d7569e"
+                      },
+                      {
+                        "$oid": "64a27cfaceaa5df54c7c20b3"
+                      },
+                      {
+                        "$oid": "64a27d268b1fa61c4f028888"
+                      }
+                    ],
+                    "imgUrl": "/uploads/image-1688368866359.jpeg",
+                    "createdAt": {
+                      "$date": "2023-07-03T07:20:40.493Z"
+                    },
+                    "updatedAt": {
+                      "$date": "2023-07-03T07:47:50.360Z"
+                    },
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server errror"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "get": {
+        "tags": ["Auth"],
+        "description": "logout user",
+        "responses": {
+          "200": {
+            "description": "logout user successfully"
+          },
+          "500": {
+            "description": "internal server errror"
+          }
+        }
+      }
+    },
+    "/auth/signUp": {
+      "get": {
+        "tags": ["Auth"],
+        "description": "load signUp page",
+        "responses": {
+          "200": {
+            "description": "loaded signUp page successfully"
+          },
+          "500": {
+            "description": "internal server errror"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Auth"],
+        "description": "user signUp",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "example": {
+                "userName": "Sahil Mistry",
+                "email": "sahil@gmail.com",
+                "password": "$2b$10$KDNMIWab4EZieqRgFHcewuE.S7GVGHlbr/VqGcmCNH62QQxfeFLWq"
+              },
+              "properties": {
+                "userName": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user signUp successfully",
+            "schema": {
+              "type": "object",
+              "example": {
+                "data": {
+                  "user": {
+                    "_id": {
+                      "$oid": "64a276c89a0682d1aa413d26"
+                    },
+                    "userName": "Bhagvanji Nakum",
+                    "email": "bhagvanji@gmail.com",
+                    "password": "$2b$10$FNVavhhn6xMCi1ZsBOBhueiGrkBZMMR",
+                    "blogs": [],
+                    "imgUrl": "/uploads/image-1688368866359.jpeg",
+                    "createdAt": {
+                      "$date": "2023-07-03T07:20:40.493Z"
+                    },
+                    "updatedAt": {
+                      "$date": "2023-07-03T07:47:50.360Z"
+                    },
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server errror"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,10 +1,14 @@
 require('dotenv').config();
 const express  = require('express');
-const app = express();
 const session = require('express-session');
 const helmet = require('helmet');
 const MongoStore = require('connect-mongodb-session')(session);
 const connectDB = require('./config/db');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger-output.json');
+const app = express();
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // rquire all routes
 const homeRouter = require('./routes/home');
