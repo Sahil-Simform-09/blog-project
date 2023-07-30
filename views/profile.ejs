@@ -1,0 +1,39 @@
+<%- include('layouts/layout') %>
+        <div class="profile">
+            <img src="<%= user.imgUrl %>" alt="">
+            <form action="" method="POST" enctype="multipart/form-data" accept="image/*">
+                <label >Add Your Image</label>
+                <input id="file" type="file" name="profile-img">
+                <button type="submit" name="submit" id="submit-file">Upload image</button>
+            </form>
+            <% if(loggedInTime) { %>
+                <p hidden data-user="<%= JSON.stringify(user) %>" id="hidden-user"></p>
+            <% } %>
+            <h2><%= user.userName %></h2>
+            <p><%= user.email %></p>
+        </div>
+        <h2>Read Your all Blogs</h2>
+        <div id="blog-container">
+            <% if(blogs) { %>
+                <% blogs.forEach( blog => { %>
+                    <div class="blog">
+                        <div class="blog-text">
+                            <h2><%= blog.title %></h2>
+                            <h4><%= blog.author %></h4>
+                            <% if(blog.content.length > 100) { %>
+                                <p><%= blog.content.substring(0, 100) %></p>
+                            <% } else { %>
+                                <p><%= blog.content %></p>
+                            <% } %>
+                            <a href="/user/blog/<%= blog._id %>">Read more...</a>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } %>
+        </div> 
+    </body>
+    <% if(loggedInTime) { %>
+        <script src="http://localhost:3000/js/profile.js"></script>
+    <% } %>
+    <script src="http://localhost:3000/js/getUser.js"></script>
+</html>

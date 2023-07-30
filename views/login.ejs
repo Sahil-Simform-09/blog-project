@@ -1,5 +1,8 @@
 <%- include('layouts/layout') %>
         <div class="login-container">
+            <% if(status !== 200) { %>
+                <h3 class="error" style="color: red; text-align: center;"><%= message %></h3>
+            <% } %>
             <h2>Login</h2>
             <form action="/auth/login" method="post">
                 <label for="email">email</label>
